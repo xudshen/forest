@@ -8,5 +8,10 @@ better html parser using XPath
   - html tables to array ```<table>```
   - html lists to array ```<ol> <ul> <li> <dl> <dt> <dd>```
   - regular list to array
+  - provide json template
 - browser plugin
+
+
+[sample]:http://nodejs.org
+
 
