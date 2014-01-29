@@ -1,0 +1,15 @@
+{
+    "id": "book",
+    "src": "http://url",
+    "srcType": "html",
+    "type": "list",
+    "data": {
+        "kind": "the data type for client",
+        "fields": {
+            "bookName": "html/body/table/thead/tr/td"
+        },
+        "id": "item id | used when type is map", //sample: __bookName
+        "__bookName": "/html/body/div/table/tbody/tr/td",
+        "bookPrice": "/html/body/div/table/tbody/tr/td"
+    }
+}
