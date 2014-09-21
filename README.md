@@ -1,7 +1,7 @@
-html2json
+forest
 =========
 
-better html parser using XPath
+restful api generator using XPath
 
 ##to do
 - parse html into json object

@@ -9,7 +9,7 @@
             "bookName": "html/body/table/thead/tr/td"
         },
         "id": "item id | used when type is map", //sample: __bookName
-        "__bookName": "/html/body/div/table/tbody/tr/td",
-        "bookPrice": "/html/body/div/table/tbody/tr/td"
+        "__bookName": "(start5char)/html/body/div/table/tbody/tr/td", //start5char is a parser for atomic value
+        "bookPrice": "(int)/html/body/div/table/tbody/tr/td"
     }
 }
