@@ -1,0 +1,20 @@
+{
+    "id": "user",
+    "src": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-table.html",
+    "src_type": "html",
+
+    "xpath": "/html/body/table/",
+    "data": {
+        "fields": {
+            "first_name": "thead/tr/th[2]/text()",
+            "last_name": "thead/tr/th[3]/text()",
+            "username": "thead/tr/th[4]/text()"
+        },
+        "__first_name": "(string)tbody/tr/td[2]/text()",
+        "__last_name": "(string)tbody/tr/td[3]/text()",
+        "__username": "(string)tbody/tr/td[4]/text()",
+        "meta": {
+            "data_id": "__username"
+        }
+    }
+}

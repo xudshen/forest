@@ -5,8 +5,8 @@
 
     "xpath": "/bookstore/book/",
     "data": {
-        "book_title": "(string)title[text()]",
-        "book_price": "(int)price[text()]",
+        "book_title": "(string)title/text()",
+        "book_price": "(int)price/text()",
         "meta": {
             "data_id": "book_title"
         }
