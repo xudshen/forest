@@ -1,0 +1,61 @@
+{
+    "controllers": [
+        {
+            "id": "query_user_book_list",
+            "parameters": [
+                {
+                    "name": "user_name",
+                    "type": "string",
+                    "required": false
+                },
+                {
+                    "name": "first_name",
+                    "type": "string",
+                    "required": false
+                },
+                {
+                    "name": "last_name",
+                    "type": "string",
+                    "required": false
+                }
+            ],
+            "query": {
+                "model": "user",
+                "joins": [
+                    {
+                        "model": "book",
+                        "on": {
+                            "op": "eq",
+                            "field": "user.user_name",
+                            "value": "book.owner"
+                        }
+                    }
+                ],
+                "filters": {
+                    "op": "and",
+                    "member": [
+                        {
+                            "op": "eq",
+                            "field": "user_name",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        },
+                        {
+                            "field": "user_name",
+                            "op": "eq",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        },
+                        {
+                            "field": "user_name",
+                            "op": "eq",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        }
+                    ]
+                }
+
+            }
+        }
+    ]
+}
