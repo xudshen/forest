@@ -1,5 +1,51 @@
 {
-    "actions": [
+    "controllers": [
+        {
+            "id": "query_user_list",
+            "parameters": [
+                {
+                    "name": "user_name",
+                    "type": "string",
+                    "required": false
+                },
+                {
+                    "name": "first_name",
+                    "type": "string",
+                    "required": false
+                },
+                {
+                    "name": "last_name",
+                    "type": "string",
+                    "required": false
+                }
+            ],
+            "query": {
+                "model": "user",
+                "filters": {
+                    "op": "and",
+                    "member": [
+                        {
+                            "op": "eq",
+                            "field": "user_name",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        },
+                        {
+                            "field": "user_name",
+                            "op": "eq",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        },
+                        {
+                            "field": "user_name",
+                            "op": "eq",
+                            "value": "{user_name}",
+                            "value_not_blank": true
+                        }
+                    ]
+                }
 
+            }
+        }
     ]
 }

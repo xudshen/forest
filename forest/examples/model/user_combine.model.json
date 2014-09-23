@@ -4,7 +4,7 @@
 
     "models": [
         {
-            "id": "user",
+            "id": "user_combine",
             "meta": {
                 "base_xpath": "/html/body/table[1]/",
                 "fields": {

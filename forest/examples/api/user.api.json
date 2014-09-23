@@ -12,9 +12,7 @@
                     "produces": [
                         "application/json;charset=UTF-8"
                     ],
-                    "parameters": [
-
-                    ]
+                    "controller": "query_user_list"
                 }
             ]
         }
