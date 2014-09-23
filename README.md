@@ -11,9 +11,10 @@ restful api generator using XPath
 │   └── user.controller.json
 ├── model
 │   ├── books.model.json
-│   └── user.model.json
+│   ├── user.model.json
+│   └── user_combine.model.json
 ├── sample-books.xml
-└── sample-table.html
+└── sample-user.html
 ```
 
 ## Todos

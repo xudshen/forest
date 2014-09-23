@@ -24,12 +24,21 @@
                 }
             },
 
-            "databases": {
-                "base_xpath": "/html/body/table[1]/",
-                "__first_name": "tbody/tr/td[2]/text()",
-                "__last_name": "tbody/tr/td[3]/text()",
-                "__user_name": "tbody/tr/td[4]/text()"
-            },
+            "databases": [
+                {
+                    "base_xpath": "/html/body/table[1]/",
+                    "__first_name": "tbody/tr/td[2]/text()",
+                    "__last_name": "tbody/tr/td[3]/text()",
+                    "__user_name": "tbody/tr/td[4]/text()"
+                },
+
+                {
+                    "base_xpath": "/html/body/table[2]/",
+                    "__first_name": "tbody/tr/td[2]/text()",
+                    "__last_name": "tbody/tr/td[3]/text()",
+                    "__user_name": "tbody/tr/td[4]/text()"
+                }
+            ],
 
             "preview:result": [
                 {
@@ -51,6 +60,11 @@
                     "First Name": "Larry",
                     "Last Name": "the Bird",
                     "Username": "@lt"
+                },
+                {
+                    "First Name": "Other Mark",
+                    "Last Name": "Other Otto",
+                    "Username": "@oomo"
                 }
             ]
         }

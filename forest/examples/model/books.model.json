@@ -5,13 +5,53 @@
     "models": [
         {
             "id": "book",
-            "base_xpath": "/bookstore/book/",
             "meta": {
-                "pk": "book_title"
+                "book_title": {
+                    "filter": "string",
+                    "pk": true
+                },
+                "book_price": {
+                    "filter": "int"
+                },
+                "book_owner": {
+                    "filter": "string"
+                }
             },
 
-            "book_title": "(string)title/text()",
-            "book_price": "(int)price/text()"
+            "databases": {
+                "base_xpath": "/bookstore/book/",
+                "__book_title": "title/text()",
+                "__book_price": "price/text()",
+                "__book_owner": "owner/text()"
+            },
+
+            "preview:result": [
+                {
+                    "book_title": "Everyday Italian",
+                    "book_price": 30,
+                    "book_owner": "@mo"
+                },
+                {
+                    "book_title": "Harry Potter and the Philosopher's Stone",
+                    "book_price": 29,
+                    "book_owner": "@mo"
+                },
+                {
+                    "book_title": "Harry Potter and the Chamber of Secrets",
+                    "book_price": 29,
+                    "book_owner": "@lo"
+                },
+                {
+                    "book_title": "XQuery Kick Start",
+                    "book_price": 49,
+                    "book_owner": "@jt"
+                },
+                {
+                    "book_title": "Learning XML",
+                    "book_price": 39,
+                    "book_owner": "@mo"
+                }
+            ]
         }
     ]
 }
