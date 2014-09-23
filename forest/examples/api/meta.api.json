@@ -1,0 +1,14 @@
+{
+    "base_path": "/api",
+    "description": "this is the BASE api config",
+
+    "api_version": "1.0",
+    "produces": [
+        "application/json;charset=UTF-8"
+    ],
+    "consumes": [
+        "application/json;charset=UTF-8"
+    ],
+
+    "apis": []
+}

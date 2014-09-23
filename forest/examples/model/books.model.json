@@ -1,0 +1,17 @@
+{
+    "src": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-books.xml",
+    "src_type": "xml",
+
+    "models": [
+        {
+            "id": "book",
+            "base_xpath": "/bookstore/book/",
+            "meta": {
+                "pk": "book_title"
+            },
+
+            "book_title": "(string)title/text()",
+            "book_price": "(int)price/text()"
+        }
+    ]
+}

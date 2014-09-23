@@ -2,7 +2,22 @@
 
 restful api generator using XPath
 
-##to do
+## Scopes
+```
+├── api
+│   ├── meta.api.json
+│   └── user.api.json
+├── controller
+│   └── user.controller.json
+├── model
+│   ├── books.model.json
+│   └── user.model.json
+├── sample-books.xml
+└── sample-table.html
+```
+
+## Todos
+- [ ] scope 
 - [ ] parse html into json object
   - [ ] html tables to array ```<table>```
   - [ ] html lists to array ```<ol> <ul> <li> <dl> <dt> <dd>```

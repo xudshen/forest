@@ -1,0 +1,22 @@
+{
+    "base_path": "/user",
+    "description": "this api is based on meta.api.json",
+
+    "apis": [
+        {
+            "path": "/user",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "get user list",
+                    "produces": [
+                        "application/json;charset=UTF-8"
+                    ],
+                    "parameters": [
+
+                    ]
+                }
+            ]
+        }
+    ]
+}
