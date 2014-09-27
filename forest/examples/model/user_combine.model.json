@@ -6,19 +6,20 @@
         {
             "id": "user_combine",
             "meta": {
-                "base_xpath": "/html/body/table[1]/",
+                //like env setting
+                "__base_xpath": "/html/body/table[1]/",
                 "fields": {
                     "first_name": {
-                        "name": "thead/tr/th[2]/text()",
-                        "filter": "string"
+                        //{} means getting the value of this xpath
+                        //[] is the filter of this xpath
+                        "alias": "[string]{thead/tr/th[2]/text()}"
                     },
                     "last_name": {
-                        "name": "thead/tr/th[3]/text()",
-                        "filter": "string"
+                        //[string] can be ignored as the default filer
+                        "alias": "{thead/tr/th[3]/text()}"
                     },
                     "user_name": {
-                        "name": "thead/tr/th[4]/text()",
-                        "filter": "string",
+                        "alias": "{thead/tr/th[4]/text()}",
                         "pk": true
                     }
                 }
@@ -26,17 +27,17 @@
 
             "databases": [
                 {
-                    "base_xpath": "/html/body/table[1]/",
-                    "__first_name": "tbody/tr/td[2]/text()",
-                    "__last_name": "tbody/tr/td[3]/text()",
-                    "__user_name": "tbody/tr/td[4]/text()"
+                    "__base_xpath": "/html/body/table[1]/",
+                    "first_name": "{tbody/tr/td[2]/text()}",
+                    "last_name": "{tbody/tr/td[3]/text()}",
+                    "user_name": "{tbody/tr/td[4]/text()}"
                 },
 
                 {
-                    "base_xpath": "/html/body/table[2]/",
-                    "__first_name": "tbody/tr/td[2]/text()",
-                    "__last_name": "tbody/tr/td[3]/text()",
-                    "__user_name": "tbody/tr/td[4]/text()"
+                    "__base_xpath": "/html/body/table[2]/",
+                    "first_name": "{tbody/tr/td[2]/text()}",
+                    "last_name": "{tbody/tr/td[3]/text()}",
+                    "user_name": "{tbody/tr/td[4]/text()}"
                 }
             ],
 
