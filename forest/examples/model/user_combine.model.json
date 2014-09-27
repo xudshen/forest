@@ -9,7 +9,7 @@
                     "first_name": {
                         //{} means getting the value of this xpath
                         //[] is the filter of this xpath
-                        "alias": "[string]{thead/tr/th[2]/text()}"
+                        "alias": "{thead/tr/th[2]/text()}[string]"
                     },
                     "last_name": {
                         //[string] can be ignored as the default filer
