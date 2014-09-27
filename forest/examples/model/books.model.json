@@ -1,7 +1,4 @@
 {
-    "src": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-books.xml",
-    "src_type": "xml",
-
     "models": [
         {
             "id": "book",
@@ -19,7 +16,7 @@
             },
 
             "databases": {
-                "__base_xpath": "/bookstore/book/",
+                "__base_xpath": "source:sample_book/bookstore/book/",
                 "book_title": "{title/text()}",
                 //use int filter to convert it to int
                 "book_price": "[int]{price/text()}",

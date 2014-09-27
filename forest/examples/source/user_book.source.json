@@ -1,0 +1,20 @@
+{
+    "sources": [
+        {
+            "id": "sample_user",
+            "url": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-user.html",
+            "method": "GET",
+            "header": {},
+            "body": "",
+            "type": "html"
+        },
+        {
+            "id": "sample_book",
+            "url": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-books.xml",
+            "method": "GET",
+            "header": {},
+            "body": "",
+            "type": "xml"
+        }
+    ]
+}

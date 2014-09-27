@@ -1,13 +1,10 @@
 {
-    "src": "https://raw.githubusercontent.com/xudshen/forest/master/forest/examples/sample-user.html",
-    "src_type": "html",
-
     "models": [
         {
             "id": "user_combine",
             "meta": {
                 //like env setting
-                "__base_xpath": "/html/body/table[1]/",
+                "__base_xpath": "source:sample_user/html/body/table[1]/",
                 "fields": {
                     "first_name": {
                         //{} means getting the value of this xpath
@@ -27,14 +24,14 @@
 
             "databases": [
                 {
-                    "__base_xpath": "/html/body/table[1]/",
+                    "__base_xpath": "source:sample_user/html/body/table[1]/",
                     "first_name": "{tbody/tr/td[2]/text()}",
                     "last_name": "{tbody/tr/td[3]/text()}",
                     "user_name": "{tbody/tr/td[4]/text()}"
                 },
 
                 {
-                    "__base_xpath": "/html/body/table[2]/",
+                    "__base_xpath": "source:sample_user/html/body/table[2]/",
                     "first_name": "{tbody/tr/td[2]/text()}",
                     "last_name": "{tbody/tr/td[3]/text()}",
                     "user_name": "{tbody/tr/td[4]/text()}"
