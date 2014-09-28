@@ -19,36 +19,19 @@
                     "required": false
                 }
             ],
-            "query": [
+            "sources": [
+                {
+                    "id": "sample_user",
+                    //this is used to specify the source request
+                    "header": {
+                        "user_name_header": "{user_name}"
+                    }
+                }
+            ],
+            "processes": [
                 {
                     "type": "sql",
-                    "content": "select * from user where user_name = {user_name} and first_name = {first_name} and last_name = {last_name}"
-                },
-                {
-                    "model": "user",
-                    "filters": {
-                        "op": "and",
-                        "member": [
-                            {
-                                "op": "eq",
-                                "field": "user_name",
-                                "value": "{user_name}",
-                                "value_not_blank": true
-                            },
-                            {
-                                "field": "first_name",
-                                "op": "eq",
-                                "value": "{first_name}",
-                                "value_not_blank": true
-                            },
-                            {
-                                "field": "last_name",
-                                "op": "eq",
-                                "value": "{last_name}",
-                                "value_not_blank": true
-                            }
-                        ]
-                    }
+                    "query": "select * from user where user_name = {user_name} and first_name = {first_name} and last_name = {last_name}"
                 }
             ]
         }
