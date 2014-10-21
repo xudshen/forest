@@ -26,5 +26,5 @@ setup(
         'Topic :: Utilities',
         'License :: OSI Approved :: MIT License',
     ],
-    requires=['beautifulsoup4>=4.3', 'sqlparse>=0.1.2']
+    requires=['requests>=2.4.3', 'beautifulsoup4>=4.3', 'sqlparse>=0.1.2']
 )
