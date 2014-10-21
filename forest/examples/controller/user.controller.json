@@ -22,7 +22,7 @@
             "sources": [
                 {
                     "id": "sample_user",
-                    //this is used to specify the source request
+                    "__comment": "this is used to specify the source request",
                     "header": {
                         "user_name_header": "{user_name}"
                     }

@@ -3,17 +3,15 @@
         {
             "id": "user",
             "meta": {
-                //like env setting
-                //source:xxx, xxx is the data source
+                "__comment": "like env setting //source:xxx, xxx is the data source",
                 "__base_xpath": "source:sample_user/html/body/table[1]/",
                 "fields": {
                     "first_name": {
-                        //{} means getting the value of this xpath
-                        //[] is the filter of this xpath
+                        "__comment": "{} means getting the value of this xpath; [] is the filter of this xpath",
                         "alias": "{thead/tr/th[2]/text()}[string]"
                     },
                     "last_name": {
-                        //[string] can be ignored as the default filer
+                        "__comment": "[string] can be ignored as the default filer",
                         "alias": "{thead/tr/th[3]/text()}"
                     },
                     "user_name": {

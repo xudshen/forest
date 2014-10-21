@@ -18,7 +18,7 @@
             "databases": {
                 "__base_xpath": "source:sample_book/bookstore/book/",
                 "book_title": "{title/text()}",
-                //use int filter to convert it to int
+                "__comment": "use int filter to convert it to int",
                 "book_price": "{price/text()}[int]",
                 "book_owner": "{owner/text()}"
             },
