@@ -39,12 +39,10 @@ class ForestSource(object):
 class ForestSourceFactory(ForestAbsFactory):
     __sources = {}
 
-    def __init__(self):
-        pass
-
     @classmethod
-    def add(cls, source_id, source):
-        cls.__sources[source_id] = source
+    def add(cls, source_id, item):
+        cls.__sources[source_id] = ForestSource(source_id, item["url"], item["method"], item["headers"], item["body"],
+                                                item["type"])
 
     @classmethod
     def get(cls, source_id):
