@@ -4,7 +4,7 @@
             "id": "user",
             "meta": {
                 "__comment": "like env setting //source:xxx, xxx is the data source",
-                "__base_xpath": "source:sample_user/html/body/table[1]/",
+                "__base_xpath": "source://sample_user/html/body/table[1]/",
                 "fields": {
                     "first_name": {
                         "__comment": "{} means getting the value of this xpath; [] is the filter of this xpath",
@@ -23,7 +23,7 @@
 
             "databases": [
                 {
-                    "__base_xpath": "source:sample_user/html/body/table[1]/",
+                    "__base_xpath": "source://sample_user/html/body/table[1]/",
                     "first_name": "{tbody/tr/td[2]/text()}",
                     "last_name": "{tbody/tr/td[3]/text()}",
                     "user_name": "{tbody/tr/td[4]/text()}"
