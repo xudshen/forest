@@ -1,9 +1,12 @@
 __author__ = 'xudshen@hotmail.com'
 
 from forest.logger import log_d
+from forest.forest_source import ForestSource, ForestSourceFactory
 
 
 class AbsPreprocessor(object):
+    """abstract preprocessor"""
+
     def __init__(self, key):
         self.__key = key
 
@@ -19,7 +22,11 @@ class SourcePreprocessor(AbsPreprocessor):
         super().__init__("sources")
 
     def process(self, obj):
-        log_d(obj)
+        # process the source type
+        # add it to the source factory
+        [ForestSourceFactory.add(item["id"],
+                                 ForestSource(item["id"], item["url"], item["method"], item["headers"], item["body"],
+                                              item["type"])) for item in obj if "id" in item and len(item["id"]) > 0]
 
 
 class ModelPreprocessor(AbsPreprocessor):

@@ -3,10 +3,11 @@ import os
 import json
 
 from forest.logger import log_i
-from forest.preprocessor import AbsPreprocessor
+from forest.forest_preprocessor import AbsPreprocessor
+from forest.forest_source import ForestSourceFactory
 
 
-class Processor(object):
+class ForestParser(object):
     """find all .json and parse"""
 
     def __init__(self, path):
@@ -27,21 +28,28 @@ class Processor(object):
 
         # prepare all the processors
         self.__preprocessors = {}
+        # find the subclasses of AbsPreprocessor
         for cls in AbsPreprocessor.__subclasses__():
             ins = cls()
             self.__preprocessors[ins.key()] = ins
         log_i("all the preprocessors:", self.__preprocessors)
 
     def process(self):
+        """
+        traversing all the file, use different preprocessor by its name
+        """
         for file in self.__config_path:
             log_i(">>processing" + file)
             with open(file) as content:
                 j = json.load(content)
                 for key in j:
                     if key in self.__preprocessors:
+                        # assign the obj to its preprocesser
                         self.__preprocessors[key].process(j[key])
 
 
 if __name__ == "__main__":
-    processor = Processor("examples")
-    processor.process()
+    parser = ForestParser("examples")
+    parser.process()
+
+    ForestSourceFactory.get("sample_user").data()
