@@ -4,7 +4,7 @@ import json
 
 from forest.logger import log_i
 from forest.forest_preprocessor import AbsPreprocessor
-from forest.forest_source import ForestSourceFactory
+from forest.forest_model import ForestModelFactory
 
 
 class ForestParser(object):
@@ -52,4 +52,7 @@ if __name__ == "__main__":
     parser = ForestParser("examples")
     parser.process()
 
-    ForestSourceFactory.get("sample_user").data()
+    # ForestSourceFactory.get("sample_user").data()
+    log_i(ForestModelFactory.get("user"))
+    log_i(ForestModelFactory.get("user_combine"))
+    log_i(ForestModelFactory.get("book"))

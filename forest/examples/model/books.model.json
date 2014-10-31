@@ -3,25 +3,29 @@
         {
             "id": "book",
             "meta": {
-                "book_title": {
-                    "alias": "book_title",
-                    "pk": true
-                },
-                "book_price": {
-                    "alias": "book_price"
-                },
-                "book_owner": {
-                    "alias": "book_owner"
+                "fields": {
+                    "book_title": {
+                        "alias": "book_title",
+                        "pk": true
+                    },
+                    "book_price": {
+                        "alias": "book_price"
+                    },
+                    "book_owner": {
+                        "alias": "book_owner"
+                    }
                 }
             },
 
-            "databases": {
-                "__base_xpath": "source://sample_book/bookstore/book/",
-                "book_title": "{title/text()}",
-                "__comment": "use int filter to convert it to int",
-                "book_price": "{price/text()}[int]",
-                "book_owner": "{owner/text()}"
-            },
+            "databases": [
+                {
+                    "__base_xpath": "source://sample_book/bookstore/book/",
+                    "book_title": "{title/text()}",
+                    "__comment": "use int filter to convert it to int",
+                    "book_price": "{price/text()}[int]",
+                    "book_owner": "{owner/text()}"
+                }
+            ],
 
             "preview:result": [
                 {
