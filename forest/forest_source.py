@@ -48,7 +48,7 @@ class ForestSourceFactory(ForestAbsFactory):
         method = item["method"] if "method" in item else "GET"
         headers = item["headers"] if "headers" in item else {}
         body = item["body"] if "body" in item else ""
-        result_type = item["type"] if "type" in item else "html"
+        result_type = item["result_type"] if "result_type" in item else "html"
 
         cls.__sources[source_id] = ForestSource(source_id, url, method, headers, body, result_type)
 

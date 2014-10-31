@@ -6,7 +6,7 @@
             "method": "GET",
             "headers": {},
             "body": "",
-            "type": "html"
+            "result_type": "html"
         },
         {
             "id": "sample_book",
@@ -14,7 +14,7 @@
             "method": "GET",
             "headers": {},
             "body": "",
-            "type": "xml"
+            "result_type": "xml"
         }
     ]
 }
