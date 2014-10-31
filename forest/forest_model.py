@@ -14,9 +14,9 @@ class ForestModel(object):
     __base_xpath = "__base_xpath"
     __source_prefix = "source://"
 
-    def __init__(self, model_id, meta={}, databases=[]):
+    def __init__(self, model_id, meta=None, databases=[]):
         self.__model_id = model_id
-        self.__meta = meta
+        self.__meta = meta if meta is not None else {}
         if self.__fields not in self.__meta:
             self.__meta[self.__fields] = {}
         self.__databases = databases
@@ -33,7 +33,6 @@ class ForestModel(object):
             return None, None
 
     def resolve_depend_sources(self):
-
         # resolve the meta
         meta_base_xpath = self.__meta[self.__base_xpath] if self.__base_xpath in self.__meta else ""
         for field_name, field_prop in self.__meta[self.__fields].items():
@@ -77,4 +76,4 @@ class ForestModelFactory(ForestAbsFactory):
 
     @classmethod
     def get(cls, model_id):
-        return cls.__models[model_id]
+        return cls.__models[model_id] if model_id in cls.__models else None

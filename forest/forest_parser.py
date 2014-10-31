@@ -5,6 +5,7 @@ import json
 from forest.logger import log_i
 from forest.forest_preprocessor import AbsPreprocessor
 from forest.forest_model import ForestModelFactory
+from forest.forest_source import ForestSourceFactory
 
 
 class ForestParser(object):
@@ -42,17 +43,16 @@ class ForestParser(object):
             log_i(">>processing" + file)
             with open(file) as content:
                 j = json.load(content)
-                for key in j:
-                    if key in self.__preprocessors:
-                        # assign the obj to its preprocesser
-                        self.__preprocessors[key].process(j[key])
+                # assign the obj to its preprocesser
+                [self.__preprocessors[key].process(j[key]) for key in j if key in self.__preprocessors]
 
 
 if __name__ == "__main__":
     parser = ForestParser("examples")
     parser.process()
 
-    # ForestSourceFactory.get("sample_user").data()
+    root = ForestSourceFactory.get("sample_user").data()
+    r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
     log_i(ForestModelFactory.get("user"))
     log_i(ForestModelFactory.get("user_combine"))
     log_i(ForestModelFactory.get("book"))
