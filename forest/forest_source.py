@@ -28,13 +28,13 @@ class ForestSource(object):
 
     def data(self):
         # send the request, get the data
-        parser = etree.HTMLParser() if self.__result_type == "html" else etree.XMLParser()
+        parser = etree.HTMLParser() if self.__result_type == "html" else etree.XMLParser(ns_clean=True, recover=True)
         if self.__method is HttpMethod.GET:
             r = requests.get(self.__url, headers=self.__headers, params={}, data=self.__body)
-            return etree.fromstring(r.text, parser=parser)
+            return etree.fromstring(r.text.encode('utf-8'), parser=parser)
         elif self.__method is HttpMethod.POST:
             r = requests.post(self.__url, headers=self.__headers, params={}, data=self.__body)
-            return etree.fromstring(r.text, parser=parser)
+            return etree.fromstring(r.text.encode('utf-8'), parser=parser)
 
 
 class ForestSourceFactory(ForestAbsFactory):

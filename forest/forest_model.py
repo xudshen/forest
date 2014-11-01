@@ -4,6 +4,7 @@ import re
 import json
 
 from forest.forest_factory import ForestAbsFactory
+from forest.forest_source import ForestSourceFactory
 from forest.logger import log_d
 
 
@@ -19,8 +20,9 @@ class ForestModel(object):
         self.__meta = self.__normalize_source(None, meta, 0, {"__xpath": ""})
         self.__databases = self.__normalize_source(None, databases, 0, {"__xpath": ""})
 
-        self.depend_sources = self.__resolve_depend_source()
-        log_d(str(self))
+        self.depend_sources = {}
+        self.grouped_depend_sources = {}
+        self.__resolve_depend_source()
 
     @staticmethod
     def __match_xpath(xpath):
@@ -93,25 +95,40 @@ class ForestModel(object):
     def __resolve_depend_source(self):
         from collections import deque
 
-        sources = {}
+        self.depend_sources = {}
         q = deque([[None, self.__meta], [None, self.__databases]])
         while len(q) > 0:
             [k, node] = q.popleft()
             if type(node) is str and k == self.__xpath:
                 path, convert = self.__match_xpath(node)
                 if path is not None:
-                    sources[node] = self.__split_source(path)
-                    sources[node][self.__convert] = convert
+                    self.depend_sources[node] = self.__split_source(path)
+                    self.depend_sources[node][self.__convert] = convert
             if type(node) is dict:
                 [q.append([k1, v1]) for k1, v1 in node.items()]
             if type(node) is list:
                 [q.append([None, v1]) for v1 in node]
-        return sources
+
+        for meta_source in self.depend_sources.values():
+            if meta_source["loc"] not in self.grouped_depend_sources:
+                self.grouped_depend_sources[meta_source["loc"]] = []
+            self.grouped_depend_sources[meta_source["loc"]].append(meta_source)
 
     def __str__(self, *args, **kwargs):
         return json.dumps(
-            {"id": self.__model_id, "meta": self.__meta, "databases": self.__databases, "depends": self.depend_sources},
+            {"id": self.__model_id, "meta": self.__meta, "databases": self.__databases,
+             "depends": [self.depend_sources, self.grouped_depend_sources]},
             indent=2)
+
+    def result(self):
+        for k, meta_sources in self.grouped_depend_sources.items():
+            if meta_sources is None:
+                continue
+
+            root = ForestSourceFactory.get(k).data()
+            for meta_source in meta_sources:
+                meta_source["value"] = root.xpath(meta_source["path"])
+                log_d(meta_source["value"])
 
 
 class ForestModelFactory(ForestAbsFactory):
@@ -126,13 +143,5 @@ class ForestModelFactory(ForestAbsFactory):
         return cls.__models[model_id] if model_id in cls.__models else None
 
     @classmethod
-    def m(cls, model_id):
-        model = cls.get(model_id)
-        if model is None:
-            return None
-
-        for source in model.depend_sources.values():
-            if source is None:
-                continue
-
-            log_d(source)
+    def values(cls):
+        return cls.__models.values()
