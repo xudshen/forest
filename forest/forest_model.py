@@ -8,6 +8,17 @@ from forest.forest_source import ForestSourceFactory
 from forest.logger import log_d
 
 
+class Converter:
+    @staticmethod
+    def string(value):
+        assert isinstance(value, object)
+        return str(value)
+
+    @staticmethod
+    def int(value):
+        return int(float(str(value)))
+
+
 class ForestModel(object):
     __private_prefix = "__"
     __xpath = "__xpath"
@@ -127,10 +138,11 @@ class ForestModel(object):
 
             root = ForestSourceFactory.get(k).data()
             for meta_source in meta_sources:
-                meta_source["value"] = root.xpath(meta_source["path"])
+                meta_source["value"] = [getattr(Converter, meta_source["convert"])(value)
+                                        for value in root.xpath(meta_source["path"])]
                 log_d(meta_source["value"])
 
-
+ 
 class ForestModelFactory(ForestAbsFactory):
     __models = {}
 
