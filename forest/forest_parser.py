@@ -51,8 +51,8 @@ if __name__ == "__main__":
     parser = ForestParser("examples")
     parser.process()
 
-    root = ForestSourceFactory.get("sample_user").data()
-    r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
-    log_i(ForestModelFactory.m("user"))
-    log_i(ForestModelFactory.get("user_combine"))
-    log_i(ForestModelFactory.get("book"))
+    # root = ForestSourceFactory.get("sample_user").data()
+    # r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
+    # log_i(ForestModelFactory.m("user"))
+    # log_i(ForestModelFactory.get("user_combine"))
+    # log_i(ForestModelFactory.get("book"))

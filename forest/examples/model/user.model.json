@@ -3,19 +3,19 @@
         {
             "id": "user",
             "meta": {
-                "__comment": "like env setting //source:xxx, xxx is the data source",
-                "__base_xpath": "source://sample_user/html/body/table[1]/",
                 "fields": {
+                    "__comment": "like env setting //source:xxx, xxx is the data source",
+                    "__xpath": "source://sample_user/html/body/table[1]/",
                     "first_name": {
                         "__comment": "{} means getting the value of this xpath; [] is the filter of this xpath",
-                        "alias": "{thead/tr/th[2]/text()}[string]"
+                        "__xpath": "{thead/tr/th[2]/text()}[string]"
                     },
                     "last_name": {
                         "__comment": "[string] can be ignored as the default filer",
-                        "alias": "{thead/tr/th[3]/text()}"
+                        "__xpath": "{thead/tr/th[3]/text()}"
                     },
                     "user_name": {
-                        "alias": "{thead/tr/th[4]/text()}",
+                        "__xpath": "{source://sample_user/html/body/table[1]/thead/tr/th[4]/text()}",
                         "pk": true
                     }
                 }
@@ -23,10 +23,16 @@
 
             "databases": [
                 {
-                    "__base_xpath": "source://sample_user/html/body/table[1]/",
-                    "first_name": "{tbody/tr/td[2]/text()}",
-                    "last_name": "{tbody/tr/td[3]/text()}",
-                    "user_name": "{tbody/tr/td[4]/text()}"
+                    "__xpath": "source://sample_user/html/body/table[1]/",
+                    "first_name": {
+                        "__xpath": "{tbody/tr/td[2]/text()}"
+                    },
+                    "last_name": {
+                        "__xpath": "{tbody/tr/td[3]/text()}"
+                    },
+                    "__comment": "this will assume the value use __xpath",
+                    "user_name": "{tbody/tr/td[4]/text()}",
+                    "other": "test"
                 }
             ],
 

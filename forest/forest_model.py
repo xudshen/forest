@@ -8,22 +8,19 @@ from forest.logger import log_d
 
 
 class ForestModel(object):
-    __fields = "fields"
-    __fields_alias = "alias"
-    __fields_convert = "convert"
-
-    __base_xpath = "__base_xpath"
+    __private_prefix = "__"
+    __xpath = "__xpath"
+    __convert = "convert"
+    __default_convert = "string"
     __source_prefix = "source://"
 
-    def __init__(self, model_id, meta=None, databases=[]):
+    def __init__(self, model_id, meta=None, databases=None):
         self.__model_id = model_id
-        self.__meta = meta if meta is not None else {}
-        if self.__fields not in self.__meta:
-            self.__meta[self.__fields] = {}
-        self.__databases = databases
+        self.__meta = self.__normalize_source(None, meta, 0, {"__xpath": ""})
+        self.__databases = self.__normalize_source(None, databases, 0, {"__xpath": ""})
 
-        self.depend_sources = {}
-        self.resolve_depend_sources()
+        self.depend_sources = self.__resolve_depend_source()
+        log_d(str(self))
 
     @staticmethod
     def __match_xpath(xpath):
@@ -37,46 +34,84 @@ class ForestModel(object):
     def __split_source(uri):
         m = re.match(r"^(.*)://(\w+)(/.*)$", uri)
         if m is not None:
-            return {"scheme": m.group(1), "loc": m.group(2), "path": m.group(3), "values": None}
+            return {"scheme": m.group(1), "loc": m.group(2), "path": m.group(3), "value": None}
         else:
             return None
 
-    def resolve_depend_sources(self):
-        # resolve the meta
-        meta_base_xpath = self.__meta[self.__base_xpath] if self.__base_xpath in self.__meta else ""
-        for field_name, field_prop in self.__meta[self.__fields].items():
-            if self.__fields_alias in field_prop:
-                # when match {}[] pattern, assume it as the xpath
-                sub_path, convert_func = self.__match_xpath(field_prop[self.__fields_alias])
-                if sub_path is None:
-                    continue
-                # re-assign the alias value
-                if not str.startswith(sub_path, self.__source_prefix):
-                    sub_path = meta_base_xpath + sub_path
+    def __normalize_source(self, k, node, level, env):
+        """
+        traverse the json object, normalize the path
+        :param k:     the key, if it is called from a list, key=""
+        :param node:  the value
+        :param level: just indicates current level
+        :param env:  {"__xpath": ""}, stores the current env
+        :return: the normalized json object
+        """
+        level += 1
+        # when the node is the leaf
+        if type(node) is str:
+            path, convert = self.__match_xpath(node)
+            # if the value match the source pattern
+            if path is not None:
+                # generate the full path
+                full_path = None
+                if not path.startswith(self.__source_prefix):
+                    # path is not a full path(start with source://)
+                    full_path = "{%s%s}[%s]" % (env[k] if k in env else env[self.__xpath], path,
+                                                convert if convert is not None else self.__default_convert)
+                elif convert is None or len(convert) == 0:
+                    # path is a full path but has not convert definition
+                    full_path = "{%s}[%s]" % (path, self.__default_convert)
 
-                self.depend_sources[sub_path] = {}
-                field_prop[self.__fields_alias] = sub_path
-                field_prop[self.__fields_convert] = convert_func
+                # if key of full_path is a simplified format, add the default "__xpath"
+                node = {self.__xpath: full_path} if k not in env else full_path
 
-        # resolve databases
-        for db in self.__databases:
-            db_base_xpath = db[self.__base_xpath] if self.__base_xpath in db else ""
-            for k, v in db.items():
-                # when match {}[] pattern, assume it as the xpath
-                sub_path, convert_func = self.__match_xpath(v)
-                if sub_path is None:
-                    continue
-                # re-assign the alias value
-                if not str.startswith(sub_path, self.__source_prefix):
-                    sub_path = db_base_xpath + sub_path
-                self.depend_sources[sub_path] = {}
-                db[k] = sub_path
+            # if the value not match the source pattern
+            else:
+                # check if it is a simplified version of value
+                node = {"value": node} if k is not None and not k.startswith(self.__private_prefix) and k != "value" \
+                    else node
+        # when the node is dict
+        elif type(node) is dict:
+            env_c = dict(env)
+            # first process the items with "__" prefix
+            for k, v in node.items():
+                if k in env:
+                    node[k] = self.__normalize_source(k, v, level, dict(env))
+                    # the "__" prefix value will effect the following base value
+                    env_c[k] += str(v)
+            # then process the other items
+            for k, v in node.items():
+                if not k in env:
+                    node[k] = self.__normalize_source(k, v, level, dict(env_c))
+        # when the node is list
+        elif type(node) is list:
+            for i, v in enumerate(node):
+                node[i] = self.__normalize_source(None, v, level, dict(env))
+        return node
 
-        # split the source
-        self.depend_sources = {k: self.__split_source(k) for k, v in self.depend_sources.items()}
+    def __resolve_depend_source(self):
+        from collections import deque
+
+        sources = {}
+        q = deque([[None, self.__meta], [None, self.__databases]])
+        while len(q) > 0:
+            [k, node] = q.popleft()
+            if type(node) is str and k == self.__xpath:
+                path, convert = self.__match_xpath(node)
+                if path is not None:
+                    sources[node] = self.__split_source(path)
+                    sources[node][self.__convert] = convert
+            if type(node) is dict:
+                [q.append([k1, v1]) for k1, v1 in node.items()]
+            if type(node) is list:
+                [q.append([None, v1]) for v1 in node]
+        return sources
 
     def __str__(self, *args, **kwargs):
-        return json.dumps({"id": self.__model_id, "meta": self.__meta, "databases": self.__databases}, indent=2)
+        return json.dumps(
+            {"id": self.__model_id, "meta": self.__meta, "databases": self.__databases, "depends": self.depend_sources},
+            indent=2)
 
 
 class ForestModelFactory(ForestAbsFactory):
