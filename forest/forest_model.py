@@ -2,6 +2,9 @@ __author__ = 'xudshen@hotmail.com'
 
 import re
 import json
+from collections import deque
+import copy
+import functools
 
 from forest.forest_factory import ForestAbsFactory
 from forest.forest_source import ForestSourceFactory
@@ -104,8 +107,6 @@ class ForestModel(object):
         return node
 
     def __resolve_depend_source(self):
-        from collections import deque
-
         self.depend_sources = {}
         q = deque([[None, self.__meta], [None, self.__databases]])
         while len(q) > 0:
@@ -131,6 +132,16 @@ class ForestModel(object):
              "depends": [self.depend_sources, self.grouped_depend_sources]},
             indent=2)
 
+    def __field_value(self, field_name):
+        if "fields" in self.__meta and field_name in self.__meta["fields"] \
+                and "__xpath" in self.__meta["fields"][field_name]:
+            value = (self.depend_sources[self.__meta["fields"][field_name]["__xpath"]])["value"]
+            if type(value) is list and len(value) > 0:
+                return value[0]
+            else:
+                return value
+        return field_name
+
     def result(self):
         for k, meta_sources in self.grouped_depend_sources.items():
             if meta_sources is None:
@@ -142,7 +153,41 @@ class ForestModel(object):
                                         for value in root.xpath(meta_source["path"])]
                 log_d(meta_source["value"])
 
- 
+        _, databases = self.__assign_value(None, copy.deepcopy(self.__databases), 0)
+        log_d(json.dumps(databases, indent=2))
+
+    def __assign_value(self, k, node, level):
+        if type(node) is dict:
+            if self.__xpath in node and node[self.__xpath] in self.depend_sources:
+                node["value"] = self.depend_sources[node[self.__xpath]]["value"]
+            if "value" in node:
+                return self.__field_value(k), node["value"]
+            # if has "value" in dict, that means it is a meta node
+            # if not, we need do merge option
+            node_c = {}
+            cnt = 1
+            for k1, v1 in node.items():
+                if not str.startswith(k1, "__"):
+                    k_n, v_n = self.__assign_value(k1, v1, level + 1)
+                    node_c[k_n] = v_n
+                    cnt = len(v_n) if type(v_n) is list and cnt < len(v_n) else cnt
+            node_t = [{} for i in range(0, cnt)]
+            for k1, v1 in node_c.items():
+                for i in range(0, cnt):
+                    node_t[i][k1] = v1[i] if type(v1) is list and i < len(v1) else v1
+            return self.__field_value(k), node_t
+            # node = dict(
+            # self.__assign_value(k1, v1, level + 1) for k1, v1 in node.items() if not str.startswith(k1, "__"))
+
+            # log_d("after merge:", node_t)
+
+        elif type(node) is list:
+            for idx, v1 in enumerate(node):
+                _, node[idx] = self.__assign_value(None, v1, level + 1)
+            return self.__field_value(k), functools.reduce(lambda x, y: x + y, node)
+        return self.__field_value(k), node
+
+
 class ForestModelFactory(ForestAbsFactory):
     __models = {}
 
