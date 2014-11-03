@@ -213,9 +213,13 @@ class ForestModelFactory(ForestAbsFactory):
         cls.__models[model_id] = ForestModel(model_id, item["meta"], item["databases"])
 
     @classmethod
-    def get(cls, model_id):
+    def get(cls, model_id) -> ForestModel:
         return cls.__models[model_id] if model_id in cls.__models else None
 
     @classmethod
     def values(cls):
+        """
+
+        :rtype : list of ForestModel
+        """
         return cls.__models.values()

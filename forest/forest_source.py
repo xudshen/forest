@@ -53,5 +53,5 @@ class ForestSourceFactory(ForestAbsFactory):
         cls.__sources[source_id] = ForestSource(source_id, url, method, headers, body, result_type)
 
     @classmethod
-    def get(cls, source_id):
+    def get(cls, source_id) -> ForestSource:
         return cls.__sources[source_id] if source_id in cls.__sources else None
