@@ -24,15 +24,18 @@ class Converter:
 class ForestModel(object):
     __private_prefix = "__"
     __xpath = "__xpath"
-    __value = "value"
+    __value = "__value"
     __convert = "convert"
     __default_convert = "string"
     __source_prefix = "source://"
 
+    __field = "fields"
+    __field_list = "list"
+
     def __init__(self, model_id, meta=None, databases=None):
         self.__model_id = model_id
-        self.__meta = self.__normalize_source(None, meta, 0, {"__xpath": ""})
-        self.__databases = self.__normalize_source(None, databases, 0, {"__xpath": ""})
+        self.__meta = self.__normalize_source(None, meta, 0, {self.__xpath: ""})
+        self.__databases = self.__normalize_source(None, databases, 0, {self.__xpath: ""})
 
         self.depend_sources = {}
         self.grouped_depend_sources = {}
@@ -85,8 +88,7 @@ class ForestModel(object):
             # if the value not match the source pattern
             else:
                 # check if it is a simplified version of value
-                node = {"value": node} if k is not None and not k.startswith(self.__private_prefix) and k != "value" \
-                    else node
+                node = {self.__value: node} if k is not None and not k.startswith(self.__private_prefix) else node
         # when the node is dict
         elif type(node) is dict:
             env_c = dict(env)
@@ -133,9 +135,9 @@ class ForestModel(object):
             indent=2)
 
     def __field_value(self, field_name):
-        if "fields" in self.__meta and field_name in self.__meta["fields"] \
-                and "__xpath" in self.__meta["fields"][field_name]:
-            value = (self.depend_sources[self.__meta["fields"][field_name]["__xpath"]])["value"]
+        if self.__field in self.__meta and field_name in self.__meta[self.__field] \
+                and self.__xpath in self.__meta[self.__field][field_name]:
+            value = (self.depend_sources[self.__meta[self.__field][field_name][self.__xpath]])["value"]
             if type(value) is list and len(value) > 0:
                 return value[0]
             else:
@@ -152,7 +154,6 @@ class ForestModel(object):
             for meta_source in meta_sources:
                 meta_source["value"] = [getattr(Converter, meta_source["convert"])(value)
                                         for value in root.xpath(meta_source["path"])]
-                log_d(meta_source["value"])
 
         # assign the sources data to databases
         _, databases = self.__assign_value(None, copy.deepcopy(self.__databases), 0)
@@ -165,9 +166,9 @@ class ForestModel(object):
             # if has "value" in dict, that means it is a meta node
             # if not, we need do merge option
             if self.__xpath in node and node[self.__xpath] in self.depend_sources:
-                node["value"] = self.depend_sources[node[self.__xpath]]["value"]
-            if "value" in node:
-                return key, node["value"]
+                node[self.__value] = self.depend_sources[node[self.__xpath]]["value"]
+            if self.__value in node:
+                return key, node[self.__value]
 
             # TODO: use yield to generate ???
             # scan the node, and assign new node value; find the longest value list
@@ -181,12 +182,14 @@ class ForestModel(object):
             for k, v in node.items():
                 if not str.startswith(k, self.__private_prefix):
                     k_n = self.__field_value(k)
+                    is_list = True if (k in self.__meta[self.__field]
+                                       and self.__field_list in self.__meta[self.__field][k]
+                                       and self.__meta[self.__field][k][self.__field_list]) else False
                     for i in range(0, cnt):
                         # assign each node,
                         # if this field is list, assign whole value
                         # if not, assign each value
-                        node_r[i][k_n] = v[i] if type(v) is list and i < len(v) and "list" not in self.__meta["fields"][
-                            k] else v
+                        node_r[i][k_n] = v[i] if type(v) is list and i < len(v) and not is_list else v
             return key, node_r if len(node_r) > 1 else (node_r[0] if len(node_r) != 0 else None)
 
         elif type(node) is list:
