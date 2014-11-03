@@ -4,7 +4,6 @@ import re
 import json
 from collections import deque
 import copy
-import functools
 
 from forest.forest_factory import ForestAbsFactory
 from forest.forest_source import ForestSourceFactory
@@ -25,6 +24,7 @@ class Converter:
 class ForestModel(object):
     __private_prefix = "__"
     __xpath = "__xpath"
+    __value = "value"
     __convert = "convert"
     __default_convert = "string"
     __source_prefix = "source://"
@@ -143,6 +143,7 @@ class ForestModel(object):
         return field_name
 
     def result(self):
+        # query the sources data
         for k, meta_sources in self.grouped_depend_sources.items():
             if meta_sources is None:
                 continue
@@ -153,39 +154,52 @@ class ForestModel(object):
                                         for value in root.xpath(meta_source["path"])]
                 log_d(meta_source["value"])
 
+        # assign the sources data to databases
         _, databases = self.__assign_value(None, copy.deepcopy(self.__databases), 0)
         log_d(json.dumps(databases, indent=2))
 
-    def __assign_value(self, k, node, level):
+        return databases
+
+    def __assign_value(self, key, node, level):
         if type(node) is dict:
+            # if has "value" in dict, that means it is a meta node
+            # if not, we need do merge option
             if self.__xpath in node and node[self.__xpath] in self.depend_sources:
                 node["value"] = self.depend_sources[node[self.__xpath]]["value"]
             if "value" in node:
-                return self.__field_value(k), node["value"]
-            # if has "value" in dict, that means it is a meta node
-            # if not, we need do merge option
-            node_c = {}
-            cnt = 1
-            for k1, v1 in node.items():
-                if not str.startswith(k1, "__"):
-                    k_n, v_n = self.__assign_value(k1, v1, level + 1)
-                    node_c[k_n] = v_n
-                    cnt = len(v_n) if type(v_n) is list and cnt < len(v_n) else cnt
-            node_t = [{} for i in range(0, cnt)]
-            for k1, v1 in node_c.items():
-                for i in range(0, cnt):
-                    node_t[i][k1] = v1[i] if type(v1) is list and i < len(v1) else v1
-            return self.__field_value(k), node_t
-            # node = dict(
-            # self.__assign_value(k1, v1, level + 1) for k1, v1 in node.items() if not str.startswith(k1, "__"))
+                return key, node["value"]
 
-            # log_d("after merge:", node_t)
+            # TODO: use yield to generate ???
+            # scan the node, and assign new node value; find the longest value list
+            cnt = 1
+            for k, v in node.items():
+                if not str.startswith(k, self.__private_prefix):
+                    _, node[k] = self.__assign_value(k, v, level + 1)
+                    cnt = len(node[k]) if type(node[k]) is list and cnt < len(node[k]) else cnt
+            # re-scan the node, generate [cnt] number of the node
+            node_r = [{} for _ in range(0, cnt)]
+            for k, v in node.items():
+                if not str.startswith(k, self.__private_prefix):
+                    k_n = self.__field_value(k)
+                    for i in range(0, cnt):
+                        # assign each node,
+                        # if this field is list, assign whole value
+                        # if not, assign each value
+                        node_r[i][k_n] = v[i] if type(v) is list and i < len(v) and "list" not in self.__meta["fields"][
+                            k] else v
+            return key, node_r if len(node_r) > 1 else (node_r[0] if len(node_r) != 0 else None)
 
         elif type(node) is list:
-            for idx, v1 in enumerate(node):
-                _, node[idx] = self.__assign_value(None, v1, level + 1)
-            return self.__field_value(k), functools.reduce(lambda x, y: x + y, node)
-        return self.__field_value(k), node
+            node_r = []
+            # if list, combine the list item to a new list
+            for k, v in enumerate(node):
+                _, node[k] = self.__assign_value(None, v, level + 1)
+                if type(node[k]) is list:
+                    node_r += node[k]
+                else:
+                    node_r.append(node[k])
+            return key, node_r if len(node_r) > 1 else (node_r[0] if len(node_r) != 0 else None)
+        return key, node
 
 
 class ForestModelFactory(ForestAbsFactory):

@@ -16,7 +16,8 @@
                     },
                     "user_name": {
                         "__xpath": "{thead/tr/th[4]/text()}",
-                        "pk": true
+                        "pk": true,
+                        "list": true
                     }
                 }
             },

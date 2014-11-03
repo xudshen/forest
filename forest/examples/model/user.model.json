@@ -12,8 +12,7 @@
                     },
                     "last_name": {
                         "__comment": "[string] can be ignored as the default filer",
-                        "__xpath": "{thead/tr/th[3]/text()}",
-                        "partial": false
+                        "__xpath": "{thead/tr/th[3]/text()}"
                     },
                     "user_name": {
                         "__xpath": "{source://sample_user/html/body/table[1]/thead/tr/th[4]/text()}",
