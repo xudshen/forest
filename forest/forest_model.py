@@ -155,6 +155,8 @@ class ForestModel(object):
                 continue
 
             root = ForestSourceFactory.get(k).data()
+            from lxml.etree import tostring
+            log_d(tostring(root, pretty_print=True))
             for meta_source in meta_sources:
                 meta_source["value"] = [getattr(Converter, meta_source["convert"])(value)
                                         for value in root.xpath(meta_source["path"])]

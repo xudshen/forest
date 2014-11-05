@@ -12,6 +12,13 @@
                     "followers": "{td[5]/text()}[int]"
                 }
             ]
+        },
+        {
+            "id": "lily_user",
+            "databases": {
+                "__xpath": "source://lily_user/html/body/center/table/tbody/tr/td/",
+                "name": "{pre/text()}"
+            }
         }
     ]
 }

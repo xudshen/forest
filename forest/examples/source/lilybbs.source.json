@@ -7,6 +7,11 @@
             "headers": {},
             "body": "",
             "parser": "html5lib"
+        },
+        {
+            "id": "lily_user",
+            "url": "http://bbs.nju.edu.cn/vd73240/bbsqry?userid=tiztm",
+            "js": true
         }
     ]
 }
