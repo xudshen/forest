@@ -19,17 +19,17 @@ class HttpMethod(Enum):
 
 
 class ForestSource(object):
-    def __init__(self, source_id, url, method="GET", headers=None, body="", result_type="html"):
+    def __init__(self, source_id, url, method="GET", headers=None, body="", parser="html5lib"):
         self.__id = source_id
         self.__url = url
         self.__method = HttpMethod.from_string(method)
         self.__headers = headers if headers is not None else {}
         self.__body = body
-        self.__result_type = result_type
+        self.__parser = parser
 
     def data(self):
         # send the request, get the data
-        parser = etree.HTMLParser(recover=True) if self.__result_type != "xml" \
+        parser = etree.HTMLParser(recover=True) if self.__parser != "xml" \
             else etree.XMLParser(ns_clean=True, recover=True)
         content = ""
         if self.__method is HttpMethod.GET:
@@ -38,7 +38,7 @@ class ForestSource(object):
         elif self.__method is HttpMethod.POST:
             r = requests.post(self.__url, headers=self.__headers, params={}, data=self.__body)
             content = r.text
-        soup = BeautifulSoup(content, self.__result_type)
+        soup = BeautifulSoup(content, self.__parser)
         return etree.fromstring(str(soup), parser=parser)
 
 
@@ -53,9 +53,9 @@ class ForestSourceFactory(ForestAbsFactory):
         method = item["method"] if "method" in item else "GET"
         headers = item["headers"] if "headers" in item else {}
         body = item["body"] if "body" in item else ""
-        result_type = item["result_type"] if "result_type" in item else "html"
+        parser = item["parser"] if "parser" in item else "html5lib"
 
-        cls.__sources[source_id] = ForestSource(source_id, url, method, headers, body, result_type)
+        cls.__sources[source_id] = ForestSource(source_id, url, method, headers, body, parser)
 
     @classmethod
     def get(cls, source_id) -> ForestSource:

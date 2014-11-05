@@ -6,7 +6,7 @@
             "method": "GET",
             "headers": {},
             "body": "",
-            "result_type": "html5lib"
+            "parser": "html5lib"
         }
     ]
 }
