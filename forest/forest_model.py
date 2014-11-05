@@ -20,6 +20,10 @@ class Converter:
     def int(value):
         return int(float(str(value)))
 
+    @staticmethod
+    def string_with_trim(value):
+        return str(value).strip()
+
 
 class ForestModel(object):
     __private_prefix = "__"
