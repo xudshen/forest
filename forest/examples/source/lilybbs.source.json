@@ -1,0 +1,12 @@
+{
+    "sources": [
+        {
+            "id": "top10",
+            "url": "http://bbs.nju.edu.cn/bbstop10",
+            "method": "GET",
+            "headers": {},
+            "body": "",
+            "result_type": "html5lib"
+        }
+    ]
+}

@@ -157,7 +157,7 @@ class ForestModel(object):
 
         # assign the sources data to databases
         _, databases = self.__assign_value(None, copy.deepcopy(self.__databases), 0)
-        log_d(json.dumps(databases, indent=2))
+        log_d(json.dumps(databases, indent=2, ensure_ascii=False))
 
         return databases
 
@@ -210,7 +210,11 @@ class ForestModelFactory(ForestAbsFactory):
 
     @classmethod
     def add(cls, model_id, item):
-        cls.__models[model_id] = ForestModel(model_id, item["meta"], item["databases"])
+        meta = item["meta"] if "meta" in item else {}
+        if "fields" not in meta:
+            meta["fields"] = {}
+        databases = item["databases"] if "databases" in item else {}
+        cls.__models[model_id] = ForestModel(model_id, meta, databases)
 
     @classmethod
     def get(cls, model_id) -> ForestModel:

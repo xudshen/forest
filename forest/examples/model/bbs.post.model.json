@@ -1,0 +1,14 @@
+{
+    "models": [
+        {
+            "id": "top10",
+            "databases": [
+                {
+                    "__xpath": "source://top10/html/body/center/table/tbody/tr/",
+                    "part": "{td[2]/a/text()}",
+                    "title": "{td[3]/a/text()}"
+                }
+            ]
+        }
+    ]
+}

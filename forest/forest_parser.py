@@ -5,7 +5,6 @@ import json
 from forest.logger import log_i
 from forest.forest_preprocessor import AbsPreprocessor
 from forest.forest_model import ForestModelFactory
-from forest.forest_source import ForestSourceFactory
 
 
 class ForestParser(object):
@@ -53,6 +52,6 @@ if __name__ == "__main__":
 
     # root = ForestSourceFactory.get("sample_user").data()
     # r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
-    [model.result() for model in ForestModelFactory.values()]
-    # ForestModelFactory.get("user_combine").result()
+    # [model.result() for model in ForestModelFactory.values()]
+    ForestModelFactory.get("top10").result()
     # log_i(ForestModelFactory.get("book"))

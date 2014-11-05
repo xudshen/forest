@@ -4,6 +4,7 @@ from enum import Enum
 
 import requests
 from lxml import etree
+from bs4 import BeautifulSoup
 
 from forest.forest_factory import ForestAbsFactory
 
@@ -28,13 +29,17 @@ class ForestSource(object):
 
     def data(self):
         # send the request, get the data
-        parser = etree.HTMLParser() if self.__result_type == "html" else etree.XMLParser(ns_clean=True, recover=True)
+        parser = etree.HTMLParser(recover=True) if self.__result_type != "xml" \
+            else etree.XMLParser(ns_clean=True, recover=True)
+        content = ""
         if self.__method is HttpMethod.GET:
             r = requests.get(self.__url, headers=self.__headers, params={}, data=self.__body)
-            return etree.fromstring(r.text.encode('utf-8'), parser=parser)
+            content = r.text
         elif self.__method is HttpMethod.POST:
             r = requests.post(self.__url, headers=self.__headers, params={}, data=self.__body)
-            return etree.fromstring(r.text.encode('utf-8'), parser=parser)
+            content = r.text
+        soup = BeautifulSoup(content, self.__result_type)
+        return etree.fromstring(str(soup), parser=parser)
 
 
 class ForestSourceFactory(ForestAbsFactory):
