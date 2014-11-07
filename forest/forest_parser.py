@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 __author__ = 'xudshen@hotmail.com'
 import os
 import json
@@ -40,8 +41,9 @@ class ForestParser(object):
         """
         for file in self.__config_path:
             log_i(">>processing" + file)
-            with open(file) as content:
-                j = json.load(content)
+            with open(file, "rb") as fp:
+                content = fp.read()
+                j = json.loads(content.decode("utf-8"))
                 # assign the obj to its preprocesser
                 [self.__preprocessors[key].process(j[key]) for key in j if key in self.__preprocessors]
 
@@ -54,5 +56,5 @@ if __name__ == "__main__":
     # r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
     # [model.result() for model in ForestModelFactory.values()]
     # ForestModelFactory.get("top10").result()
-    ForestModelFactory.get("lily_user").result()
+    ForestModelFactory.get("lily_user_no_js").result()
     # log_i(ForestModelFactory.get("book"))

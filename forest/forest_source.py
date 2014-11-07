@@ -28,8 +28,9 @@ class ForestSource(object):
         self.__body = body
         self.__parser = parser
         self.__js = js
-        self.__browser = webdriver.PhantomJS(executable_path="/usr/local/bin/phantomjs")
-        self.__browser.set_window_size(1120, 550)
+        if self.__js:
+            self.__browser = webdriver.PhantomJS(executable_path="/usr/local/bin/phantomjs")
+            self.__browser.set_window_size(1120, 550)
 
     def data(self):
         # send the request, get the data

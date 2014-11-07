@@ -12,6 +12,10 @@
             "id": "lily_user",
             "url": "http://bbs.nju.edu.cn/vd73240/bbsqry?userid=tiztm",
             "js": true
+        },
+        {
+            "id": "lily_user_no_js",
+            "url": "http://bbs.nju.edu.cn/vd73240/bbsqry?userid=tiztm"
         }
     ]
 }
