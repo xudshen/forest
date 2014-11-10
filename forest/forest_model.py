@@ -43,13 +43,20 @@ class ForestModel(object):
 
         self.depend_sources = {}
         self.grouped_depend_sources = {}
+        log_d(self)
         self.__resolve_depend_source()
+        log_d(self)
 
     @staticmethod
     def __match_xpath(xpath):
-        m = re.match(r"^\{(.*)\}(\[(.*)\])?$", xpath)
+        """
+        match the path, with {} or [] or {}[]
+        :param xpath: the path
+        :return: path, func
+        """
+        m = re.match(r"^(\{(?P<path>.*)\})?(\[(?P<func>.*)\])?$", xpath)
         if m is not None:
-            return m.group(1), m.group(3)
+            return m.group("path"), m.group("func")
         else:
             return None, None
 
@@ -75,16 +82,17 @@ class ForestModel(object):
         if type(node) is str:
             path, convert = self.__match_xpath(node)
             # if the value match the source pattern
-            if path is not None:
+            if path is not None or convert is not None:
                 # generate the full path
                 full_path = None
+                convert = self.__default_convert if convert is None or len(convert) == 0 else convert
+                path = "" if path is None else path
+
                 if not path.startswith(self.__source_prefix):
                     # path is not a full path(start with source://)
-                    full_path = "{%s%s}[%s]" % (env[k] if k in env else env[self.__xpath], path,
-                                                convert if convert is not None else self.__default_convert)
-                elif convert is None or len(convert) == 0:
-                    # path is a full path but has not convert definition
-                    full_path = "{%s}[%s]" % (path, self.__default_convert)
+                    full_path = "{%s%s}[%s]" % (env[k] if k in env else env[self.__xpath], path, convert)
+                else:
+                    full_path = "{%s}[%s]" % (path, convert)
 
                 # if key of full_path is a simplified format, add the default "__xpath"
                 node = {self.__xpath: full_path} if k not in env else full_path
@@ -135,7 +143,7 @@ class ForestModel(object):
     def __str__(self, *args, **kwargs):
         return json.dumps(
             {"id": self.__model_id, "meta": self.__meta, "databases": self.__databases,
-             "depends": [self.depend_sources, self.grouped_depend_sources]},
+             "depend_sources": self.depend_sources, "grouped_depend_sources": self.grouped_depend_sources},
             indent=2)
 
     def __field_value(self, field_name):
@@ -156,6 +164,7 @@ class ForestModel(object):
 
             root = ForestSourceFactory.get(k).data()
             from lxml.etree import tostring
+
             log_d(tostring(root, pretty_print=True))
             for meta_source in meta_sources:
                 meta_source["value"] = [getattr(Converter, meta_source["convert"])(value)
