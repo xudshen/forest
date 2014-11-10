@@ -1,0 +1,12 @@
+{
+    "sources": [
+        {
+            "id": "shanghaizufang",
+            "url": "http://www.douban.com/group/shanghaizufang/discussion?start=1",
+            "method": "GET",
+            "headers": {},
+            "body": "",
+            "parser": "html5lib"
+        }
+    ]
+}
