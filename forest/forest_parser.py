@@ -49,12 +49,13 @@ class ForestParser(object):
 
 
 if __name__ == "__main__":
+    # parser = ForestParser("examples/model/user.model.json")
     parser = ForestParser("examples")
     parser.process()
 
     # root = ForestSourceFactory.get("sample_user").data()
     # r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
-    # [model.result() for model in ForestModelFactory.values()]
+    [model.result() for model in ForestModelFactory.values()]
     # ForestModelFactory.get("top10").result()
-    ForestModelFactory.get("shanghaizufang").result()
+    # ForestModelFactory.get("user").result()
     # log_i(ForestModelFactory.get("book"))

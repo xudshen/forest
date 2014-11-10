@@ -43,18 +43,18 @@ class ForestModel(object):
 
         self.depend_sources = {}
         self.grouped_depend_sources = {}
-        log_d(self)
+        # log_d(self)
         self.__resolve_depend_source()
-        log_d(self)
+        # log_d(self)
 
     @staticmethod
     def __match_xpath(xpath):
         """
-        match the path, with {} or [] or {}[]
+        match the path, with {} or () or {}()
         :param xpath: the path
         :return: path, func
         """
-        m = re.match(r"^(\{(?P<path>.*)\})?(\[(?P<func>.*)\])?$", xpath)
+        m = re.match(r"^(\{(?P<path>.*)\})?(\((?P<func>.*)\))?$", xpath)
         if m is not None:
             return m.group("path"), m.group("func")
         else:
@@ -90,9 +90,9 @@ class ForestModel(object):
 
                 if not path.startswith(self.__source_prefix):
                     # path is not a full path(start with source://)
-                    full_path = "{%s%s}[%s]" % (env[k] if k in env else env[self.__xpath], path, convert)
+                    full_path = "{%s%s}(%s)" % (env[k] if k in env else env[self.__xpath], path, convert)
                 else:
-                    full_path = "{%s}[%s]" % (path, convert)
+                    full_path = "{%s}(%s)" % (path, convert)
 
                 # if key of full_path is a simplified format, add the default "__xpath"
                 node = {self.__xpath: full_path} if k not in env else full_path

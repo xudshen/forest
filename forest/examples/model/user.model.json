@@ -7,11 +7,11 @@
                     "__comment": "like env setting //source:xxx, xxx is the data source",
                     "__xpath": "source://sample_user/html/body/table[1]/",
                     "first_name": {
-                        "__comment": "{} means getting the value of this xpath; [] is the filter of this xpath",
-                        "__xpath": "{thead/tr/th[2]/text()}[string]"
+                        "__comment": "{} means getting the value of this xpath; () is the filter chain of this xpath",
+                        "__xpath": "{thead/tr/th[2]/text()}(string)"
                     },
                     "last_name": {
-                        "__comment": "[string] can be ignored as the default filer",
+                        "__comment": "(string) can be ignored as the default filer",
                         "__xpath": "{thead/tr/th[3]/text()}"
                     },
                     "user_name": {

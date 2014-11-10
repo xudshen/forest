@@ -22,7 +22,7 @@
                     "__xpath": "source://sample_book/bookstore/book/",
                     "book_title": "{title/text()}",
                     "__comment": "use int filter to convert it to int",
-                    "book_price": "{price/text()}[int]",
+                    "book_price": "{price/text()}(int)",
                     "book_owner": "{owner/text()}"
                 }
             ],
