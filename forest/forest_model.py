@@ -8,6 +8,7 @@ import copy
 from forest.forest_factory import ForestAbsFactory
 from forest.forest_source import ForestSourceFactory
 from forest.logger import log_d
+from forest.path_parser import resolve_xpath
 
 
 class Converter:
@@ -45,7 +46,7 @@ class ForestModel(object):
         self.grouped_depend_sources = {}
         # log_d(self)
         self.__resolve_depend_source()
-        # log_d(self)
+        # log_d(json.dumps({"depend_sources": self.depend_sources}, indent=2))
 
     @staticmethod
     def __match_xpath(xpath):
@@ -126,7 +127,7 @@ class ForestModel(object):
         while len(q) > 0:
             [k, node] = q.popleft()
             if type(node) is str and k == self.__xpath:
-                path, convert = self.__match_xpath(node)
+                path, convert = resolve_xpath(node)
                 if path is not None:
                     self.depend_sources[node] = self.__split_source(path)
                     self.depend_sources[node][self.__convert] = convert

@@ -1,5 +1,7 @@
 __author__ = 'xudshen@hotmail.com'
 
+from forest.logger import log_d
+
 tokens = (
     'NAME', 'NUMBER', 'STRING', 'STRING_PATH',
     'LPAREN', 'RPAREN', 'LCURLY', 'RCURLY',
@@ -22,7 +24,7 @@ def t_NUMBER(t):
     try:
         t.value = int(t.value)
     except ValueError:
-        print("Integer value too large %d", t.value)
+        log_d("Integer value too large %d", t.value)
         t.value = 0
     return t
 
@@ -33,7 +35,7 @@ def t_STRING_PATH(t):
         t.value = str(t.value)
         t.value = t.value[1:-1]
     except ValueError:
-        print("Can not parser string", t.value)
+        log_d("Can not parser string", t.value)
         t.value = ""
     return t
 
@@ -44,7 +46,7 @@ def t_STRING(t):
         t.value = str(t.value)
         t.value = t.value[1:-1]
     except ValueError:
-        print("Can not parser string", t.value)
+        log_d("Can not parser string", t.value)
         t.value = ""
     return t
 
@@ -58,7 +60,7 @@ def t_newline(t):
 
 
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    log_d("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 # Build the lexer
@@ -113,7 +115,7 @@ def p_argument(t):
 
 
 def p_error(t):
-    print("Syntax error at '%s'" % (t.value if t is not None else "unknown"))
+    log_d("Syntax error at '%s'" % (t.value if t is not None else "unknown"))
 
 
 import ply.yacc as yacc
@@ -121,9 +123,13 @@ import ply.yacc as yacc
 parser = yacc.yacc()
 
 
-def match_xpath(path):
+def resolve_xpath(path):
+    log_d("resolve xpath", path)
     ast = parser.parse(path)
-    return ast
+    if ast is None:
+        log_d("resolve xpath failed: " + path)
+        return None, None
+    return ast["path"] if "path" in ast else None, ast["chain"] if "chain" in ast else None
 
 
 if __name__ == '__main__':
@@ -137,6 +143,6 @@ if __name__ == '__main__':
         #     tok = lexer.token()
         #     if not tok:
         #         break
-        #     print(tok)
+        #     log_d(tok)
 
-        print(parser.parse(s, lexer=lexer))
+        log_d(parser.parse(s, lexer=lexer))
