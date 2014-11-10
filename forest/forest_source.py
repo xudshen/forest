@@ -44,8 +44,7 @@ class ForestSource(object):
             elif self.__method is HttpMethod.POST:
                 r = requests.post(self.__url, headers=self.__headers, params={}, data=self.__body)
                 content = r.text
-            soup = BeautifulSoup(content, self.__parser)
-            content = str(soup)
+            content = str(BeautifulSoup(content, self.__parser)) if self.__parser != "xml" else content.encode("utf-8")
         else:
             if self.__method is HttpMethod.GET:
                 self.__browser.get(self.__url)
