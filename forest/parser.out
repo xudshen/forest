@@ -2,177 +2,235 @@ Created by PLY version 3.4 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    LSQUAR
-    RSQUAR
+    SQUOTE
+    RCURLY
+    LCURLY
 
 Grammar
 
-Rule 0     S' -> FUNCTION_CHAIN
-Rule 1     FUNCTION_CHAIN -> FUNCTION
-Rule 2     FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION
-Rule 3     FUNCTION -> LPAREN NAME RPAREN
-Rule 4     FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN
-Rule 5     ARGUMENT_LIST -> ARGUMENT
-Rule 6     ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT
-Rule 7     ARGUMENT -> STRING
-Rule 8     ARGUMENT -> NUMBER
+Rule 0     S' -> PATH
+Rule 1     PATH -> STRING_PATH
+Rule 2     PATH -> FUNCTION_CHAIN
+Rule 3     PATH -> PATH FUNCTION_CHAIN
+Rule 4     FUNCTION_CHAIN -> FUNCTION
+Rule 5     FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION
+Rule 6     FUNCTION -> LPAREN NAME RPAREN
+Rule 7     FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN
+Rule 8     ARGUMENT_LIST -> ARGUMENT
+Rule 9     ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT
+Rule 10    ARGUMENT -> STRING
+Rule 11    ARGUMENT -> NUMBER
 
 Terminals, with rules where they appear
 
-COMMA                : 4 6
-LPAREN               : 3 4
-LSQUAR               : 
-NAME                 : 3 4
-NUMBER               : 8
-RPAREN               : 3 4
-RSQUAR               : 
-STRING               : 7
+COMMA                : 7 9
+LCURLY               : 
+LPAREN               : 6 7
+NAME                 : 6 7
+NUMBER               : 11
+RCURLY               : 
+RPAREN               : 6 7
+SQUOTE               : 
+STRING               : 10
+STRING_PATH          : 1
 error                : 
 
 Nonterminals, with rules where they appear
 
-ARGUMENT             : 5 6
-ARGUMENT_LIST        : 4 6
-FUNCTION             : 1 2
-FUNCTION_CHAIN       : 2 0
+ARGUMENT             : 8 9
+ARGUMENT_LIST        : 7 9
+FUNCTION             : 4 5
+FUNCTION_CHAIN       : 2 3 5
+PATH                 : 3 0
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . FUNCTION_CHAIN
-    (1) FUNCTION_CHAIN -> . FUNCTION
-    (2) FUNCTION_CHAIN -> . FUNCTION_CHAIN FUNCTION
-    (3) FUNCTION -> . LPAREN NAME RPAREN
-    (4) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
+    (0) S' -> . PATH
+    (1) PATH -> . STRING_PATH
+    (2) PATH -> . FUNCTION_CHAIN
+    (3) PATH -> . PATH FUNCTION_CHAIN
+    (4) FUNCTION_CHAIN -> . FUNCTION
+    (5) FUNCTION_CHAIN -> . FUNCTION_CHAIN FUNCTION
+    (6) FUNCTION -> . LPAREN NAME RPAREN
+    (7) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
 
-    LPAREN          shift and go to state 2
+    STRING_PATH     shift and go to state 1
+    LPAREN          shift and go to state 4
 
+    FUNCTION_CHAIN                 shift and go to state 2
+    PATH                           shift and go to state 5
     FUNCTION                       shift and go to state 3
-    FUNCTION_CHAIN                 shift and go to state 1
 
 state 1
 
-    (0) S' -> FUNCTION_CHAIN .
-    (2) FUNCTION_CHAIN -> FUNCTION_CHAIN . FUNCTION
-    (3) FUNCTION -> . LPAREN NAME RPAREN
-    (4) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
+    (1) PATH -> STRING_PATH .
 
-    LPAREN          shift and go to state 2
+    LPAREN          reduce using rule 1 (PATH -> STRING_PATH .)
+    $end            reduce using rule 1 (PATH -> STRING_PATH .)
 
-    FUNCTION                       shift and go to state 4
 
 state 2
 
-    (3) FUNCTION -> LPAREN . NAME RPAREN
-    (4) FUNCTION -> LPAREN . NAME COMMA ARGUMENT_LIST RPAREN
+    (2) PATH -> FUNCTION_CHAIN .
+    (5) FUNCTION_CHAIN -> FUNCTION_CHAIN . FUNCTION
+    (6) FUNCTION -> . LPAREN NAME RPAREN
+    (7) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
 
-    NAME            shift and go to state 5
+  ! shift/reduce conflict for LPAREN resolved as shift
+    $end            reduce using rule 2 (PATH -> FUNCTION_CHAIN .)
+    LPAREN          shift and go to state 4
 
+  ! LPAREN          [ reduce using rule 2 (PATH -> FUNCTION_CHAIN .) ]
+
+    FUNCTION                       shift and go to state 6
 
 state 3
 
-    (1) FUNCTION_CHAIN -> FUNCTION .
+    (4) FUNCTION_CHAIN -> FUNCTION .
 
-    LPAREN          reduce using rule 1 (FUNCTION_CHAIN -> FUNCTION .)
-    $end            reduce using rule 1 (FUNCTION_CHAIN -> FUNCTION .)
+    LPAREN          reduce using rule 4 (FUNCTION_CHAIN -> FUNCTION .)
+    $end            reduce using rule 4 (FUNCTION_CHAIN -> FUNCTION .)
 
 
 state 4
 
-    (2) FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .
+    (6) FUNCTION -> LPAREN . NAME RPAREN
+    (7) FUNCTION -> LPAREN . NAME COMMA ARGUMENT_LIST RPAREN
 
-    LPAREN          reduce using rule 2 (FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .)
-    $end            reduce using rule 2 (FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .)
+    NAME            shift and go to state 7
 
 
 state 5
 
-    (3) FUNCTION -> LPAREN NAME . RPAREN
-    (4) FUNCTION -> LPAREN NAME . COMMA ARGUMENT_LIST RPAREN
+    (0) S' -> PATH .
+    (3) PATH -> PATH . FUNCTION_CHAIN
+    (4) FUNCTION_CHAIN -> . FUNCTION
+    (5) FUNCTION_CHAIN -> . FUNCTION_CHAIN FUNCTION
+    (6) FUNCTION -> . LPAREN NAME RPAREN
+    (7) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
 
-    RPAREN          shift and go to state 7
-    COMMA           shift and go to state 6
+    LPAREN          shift and go to state 4
 
+    FUNCTION_CHAIN                 shift and go to state 8
+    FUNCTION                       shift and go to state 3
 
 state 6
 
-    (4) FUNCTION -> LPAREN NAME COMMA . ARGUMENT_LIST RPAREN
-    (5) ARGUMENT_LIST -> . ARGUMENT
-    (6) ARGUMENT_LIST -> . ARGUMENT_LIST COMMA ARGUMENT
-    (7) ARGUMENT -> . STRING
-    (8) ARGUMENT -> . NUMBER
+    (5) FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .
 
-    STRING          shift and go to state 11
-    NUMBER          shift and go to state 8
+    LPAREN          reduce using rule 5 (FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .)
+    $end            reduce using rule 5 (FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION .)
 
-    ARGUMENT_LIST                  shift and go to state 9
-    ARGUMENT                       shift and go to state 10
 
 state 7
 
-    (3) FUNCTION -> LPAREN NAME RPAREN .
+    (6) FUNCTION -> LPAREN NAME . RPAREN
+    (7) FUNCTION -> LPAREN NAME . COMMA ARGUMENT_LIST RPAREN
 
-    LPAREN          reduce using rule 3 (FUNCTION -> LPAREN NAME RPAREN .)
-    $end            reduce using rule 3 (FUNCTION -> LPAREN NAME RPAREN .)
+    RPAREN          shift and go to state 9
+    COMMA           shift and go to state 10
 
 
 state 8
 
-    (8) ARGUMENT -> NUMBER .
+    (3) PATH -> PATH FUNCTION_CHAIN .
+    (5) FUNCTION_CHAIN -> FUNCTION_CHAIN . FUNCTION
+    (6) FUNCTION -> . LPAREN NAME RPAREN
+    (7) FUNCTION -> . LPAREN NAME COMMA ARGUMENT_LIST RPAREN
 
-    RPAREN          reduce using rule 8 (ARGUMENT -> NUMBER .)
-    COMMA           reduce using rule 8 (ARGUMENT -> NUMBER .)
+  ! shift/reduce conflict for LPAREN resolved as shift
+    $end            reduce using rule 3 (PATH -> PATH FUNCTION_CHAIN .)
+    LPAREN          shift and go to state 4
 
+  ! LPAREN          [ reduce using rule 3 (PATH -> PATH FUNCTION_CHAIN .) ]
+
+    FUNCTION                       shift and go to state 6
 
 state 9
 
-    (4) FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST . RPAREN
-    (6) ARGUMENT_LIST -> ARGUMENT_LIST . COMMA ARGUMENT
+    (6) FUNCTION -> LPAREN NAME RPAREN .
 
-    RPAREN          shift and go to state 13
-    COMMA           shift and go to state 12
+    LPAREN          reduce using rule 6 (FUNCTION -> LPAREN NAME RPAREN .)
+    $end            reduce using rule 6 (FUNCTION -> LPAREN NAME RPAREN .)
 
 
 state 10
 
-    (5) ARGUMENT_LIST -> ARGUMENT .
+    (7) FUNCTION -> LPAREN NAME COMMA . ARGUMENT_LIST RPAREN
+    (8) ARGUMENT_LIST -> . ARGUMENT
+    (9) ARGUMENT_LIST -> . ARGUMENT_LIST COMMA ARGUMENT
+    (10) ARGUMENT -> . STRING
+    (11) ARGUMENT -> . NUMBER
 
-    RPAREN          reduce using rule 5 (ARGUMENT_LIST -> ARGUMENT .)
-    COMMA           reduce using rule 5 (ARGUMENT_LIST -> ARGUMENT .)
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 11
 
+    ARGUMENT_LIST                  shift and go to state 13
+    ARGUMENT                       shift and go to state 12
 
 state 11
 
-    (7) ARGUMENT -> STRING .
+    (11) ARGUMENT -> NUMBER .
 
-    RPAREN          reduce using rule 7 (ARGUMENT -> STRING .)
-    COMMA           reduce using rule 7 (ARGUMENT -> STRING .)
+    RPAREN          reduce using rule 11 (ARGUMENT -> NUMBER .)
+    COMMA           reduce using rule 11 (ARGUMENT -> NUMBER .)
 
 
 state 12
 
-    (6) ARGUMENT_LIST -> ARGUMENT_LIST COMMA . ARGUMENT
-    (7) ARGUMENT -> . STRING
-    (8) ARGUMENT -> . NUMBER
+    (8) ARGUMENT_LIST -> ARGUMENT .
 
-    STRING          shift and go to state 11
-    NUMBER          shift and go to state 8
+    RPAREN          reduce using rule 8 (ARGUMENT_LIST -> ARGUMENT .)
+    COMMA           reduce using rule 8 (ARGUMENT_LIST -> ARGUMENT .)
 
-    ARGUMENT                       shift and go to state 14
 
 state 13
 
-    (4) FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .
+    (7) FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST . RPAREN
+    (9) ARGUMENT_LIST -> ARGUMENT_LIST . COMMA ARGUMENT
 
-    LPAREN          reduce using rule 4 (FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .)
-    $end            reduce using rule 4 (FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .)
+    RPAREN          shift and go to state 15
+    COMMA           shift and go to state 16
 
 
 state 14
 
-    (6) ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .
+    (10) ARGUMENT -> STRING .
 
-    RPAREN          reduce using rule 6 (ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .)
-    COMMA           reduce using rule 6 (ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .)
+    RPAREN          reduce using rule 10 (ARGUMENT -> STRING .)
+    COMMA           reduce using rule 10 (ARGUMENT -> STRING .)
 
+
+state 15
+
+    (7) FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .
+
+    LPAREN          reduce using rule 7 (FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .)
+    $end            reduce using rule 7 (FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN .)
+
+
+state 16
+
+    (9) ARGUMENT_LIST -> ARGUMENT_LIST COMMA . ARGUMENT
+    (10) ARGUMENT -> . STRING
+    (11) ARGUMENT -> . NUMBER
+
+    STRING          shift and go to state 14
+    NUMBER          shift and go to state 11
+
+    ARGUMENT                       shift and go to state 17
+
+state 17
+
+    (9) ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .
+
+    RPAREN          reduce using rule 9 (ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .)
+    COMMA           reduce using rule 9 (ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for LPAREN in state 2 resolved as shift
+WARNING: shift/reduce conflict for LPAREN in state 8 resolved as shift

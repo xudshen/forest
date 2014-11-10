@@ -5,9 +5,9 @@ _tabversion = '3.2'
 
 _lr_method = 'LALR'
 
-_lr_signature = b'\x0b\xc3uv\x1c\xed\x17\xed\xdb\xb2L\xe6\x01]\nC'
+_lr_signature = b'E\xccv\n\xbf\xa1\th?&\xae1\x97\x862G'
     
-_lr_action_items = {'NUMBER':([6,12,],[8,8,]),'NAME':([2,],[5,]),'$end':([1,3,4,7,13,],[0,-1,-2,-3,-4,]),'RPAREN':([5,8,9,10,11,14,],[7,-8,13,-5,-7,-6,]),'LPAREN':([0,1,3,4,7,13,],[2,2,-1,-2,-3,-4,]),'COMMA':([5,8,9,10,11,14,],[6,-8,12,-5,-7,-6,]),'STRING':([6,12,],[11,11,]),}
+_lr_action_items = {'STRING_PATH':([0,],[1,]),'RPAREN':([7,11,12,13,14,17,],[9,-11,-8,15,-10,-9,]),'$end':([1,2,3,5,6,8,9,15,],[-1,-2,-4,0,-5,-3,-6,-7,]),'COMMA':([7,11,12,13,14,17,],[10,-11,-8,16,-10,-9,]),'NUMBER':([10,16,],[11,11,]),'LPAREN':([0,1,2,3,5,6,8,9,15,],[4,-1,4,-4,4,-5,4,-6,-7,]),'NAME':([4,],[7,]),'STRING':([10,16,],[14,14,]),}
 
 _lr_action = { }
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'ARGUMENT_LIST':([6,],[9,]),'ARGUMENT':([6,12,],[10,14,]),'FUNCTION':([0,1,],[3,4,]),'FUNCTION_CHAIN':([0,],[1,]),}
+_lr_goto_items = {'FUNCTION_CHAIN':([0,5,],[2,8,]),'ARGUMENT_LIST':([10,],[13,]),'PATH':([0,],[5,]),'ARGUMENT':([10,16,],[12,17,]),'FUNCTION':([0,2,5,8,],[3,6,3,6,]),}
 
 _lr_goto = { }
 for _k, _v in _lr_goto_items.items():
@@ -25,13 +25,16 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> FUNCTION_CHAIN","S'",1,None,None,None),
-  ('FUNCTION_CHAIN -> FUNCTION','FUNCTION_CHAIN',1,'p_function_chain','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',76),
-  ('FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION','FUNCTION_CHAIN',2,'p_function_chain','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',77),
-  ('FUNCTION -> LPAREN NAME RPAREN','FUNCTION',3,'p_function','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',84),
-  ('FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN','FUNCTION',5,'p_function','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',85),
-  ('ARGUMENT_LIST -> ARGUMENT','ARGUMENT_LIST',1,'p_argument_list','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',92),
-  ('ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT','ARGUMENT_LIST',3,'p_argument_list','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',93),
-  ('ARGUMENT -> STRING','ARGUMENT',1,'p_argument','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',101),
-  ('ARGUMENT -> NUMBER','ARGUMENT',1,'p_argument','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',102),
+  ("S' -> PATH","S'",1,None,None,None),
+  ('PATH -> STRING_PATH','PATH',1,'p_path','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',71),
+  ('PATH -> FUNCTION_CHAIN','PATH',1,'p_path','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',72),
+  ('PATH -> PATH FUNCTION_CHAIN','PATH',2,'p_path','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',73),
+  ('FUNCTION_CHAIN -> FUNCTION','FUNCTION_CHAIN',1,'p_function_chain','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',84),
+  ('FUNCTION_CHAIN -> FUNCTION_CHAIN FUNCTION','FUNCTION_CHAIN',2,'p_function_chain','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',85),
+  ('FUNCTION -> LPAREN NAME RPAREN','FUNCTION',3,'p_function','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',93),
+  ('FUNCTION -> LPAREN NAME COMMA ARGUMENT_LIST RPAREN','FUNCTION',5,'p_function','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',94),
+  ('ARGUMENT_LIST -> ARGUMENT','ARGUMENT_LIST',1,'p_argument_list','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',101),
+  ('ARGUMENT_LIST -> ARGUMENT_LIST COMMA ARGUMENT','ARGUMENT_LIST',3,'p_argument_list','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',102),
+  ('ARGUMENT -> STRING','ARGUMENT',1,'p_argument','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',110),
+  ('ARGUMENT -> NUMBER','ARGUMENT',1,'p_argument','/Users/xudshen/Workspace/PycharmProjects/forest/forest/path_parser.py',111),
 ]
