@@ -13,17 +13,67 @@ from forest.path_parser import resolve_xpath
 
 class Converter:
     @staticmethod
-    def string(value):
-        assert isinstance(value, object)
-        return str(value)
+    def __parse_method(convert):
+        if isinstance(convert, list) and len(convert) > 0:
+            return convert[0], convert[1:]
+        elif isinstance(convert, str):
+            return convert, []
+        else:
+            return None, []
 
     @staticmethod
-    def int(value):
-        return int(float(str(value)))
+    def excute_filter(values, convert):
+        method_name, args = Converter.__parse_method(convert)
+        if method_name is None:
+            return values, None
+        # excute
+        try:
+            method = getattr(Converter, method_name)
+            if callable(method):
+                return method(values, *args)
+            else:
+                log_d("Converter.%s is not callable" % (method_name,))
+                return values, None
+        except AttributeError:
+            log_d("not found Converter.%s" % (method_name,))
 
     @staticmethod
-    def string_with_trim(value):
-        return str(value).strip()
+    def equal_method(convert_a, convert_b):
+        method_name_a, _ = Converter.__parse_method(convert_a)
+        method_name_b, _ = Converter.__parse_method(convert_b)
+        return method_name_a == method_name_b
+
+    @staticmethod
+    def string(values):
+        assert isinstance(values, object)
+        return [str(value) for value in values], None
+
+    @staticmethod
+    def int(values):
+        return [int(float(str(value))) for value in values], None
+
+    @staticmethod
+    def string_with_trim(values):
+        return [str(value).strip() for value in values], None
+
+    @staticmethod
+    def regex(values, rule):
+        ret = []
+        for value in values:
+            log_d(value)
+            m = re.match(rule, value)
+            if m is not None:
+                ret.append(m)
+        return ret, 'index'
+
+    @staticmethod
+    def index(values, key=0):
+        ret = []
+        for value in values:
+            g = value.group(key)
+            if g is not None:
+                ret.append(g)
+        return ret, None
 
 
 class ForestModel(object):
@@ -157,6 +207,7 @@ class ForestModel(object):
                 return value
         return field_name
 
+
     def result(self):
         # query the sources data
         for k, meta_sources in self.grouped_depend_sources.items():
@@ -168,8 +219,14 @@ class ForestModel(object):
 
             log_d(tostring(root, pretty_print=True))
             for meta_source in meta_sources:
-                meta_source["value"] = [getattr(Converter, meta_source["convert"])(value)
-                                        for value in root.xpath(meta_source["path"])]
+                meta_source["value"] = root.xpath(meta_source["path"])
+                # loop the converts
+                converts = meta_source[self.__convert]
+                for idx, _ in enumerate(converts):
+                    meta_source["value"], next_convert = Converter.excute_filter(meta_source["value"], converts[idx])
+                    # for the convert chain
+                    while not Converter.equal_method(next_convert, converts[idx + 1] if idx + 1 < len(converts) else None):
+                        meta_source["value"], next_convert = Converter.excute_filter(meta_source["value"], next_convert)
 
         # assign the sources data to databases
         _, databases = self.__assign_value(None, copy.deepcopy(self.__databases), 0)
