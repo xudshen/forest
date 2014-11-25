@@ -94,7 +94,7 @@ class ForestModel(object):
 
         self.depend_sources = {}
         self.grouped_depend_sources = {}
-        # log_d(self)
+        log_d(self)
         self.__resolve_depend_source()
         # log_d(json.dumps({"depend_sources": self.depend_sources}, indent=2))
 
@@ -220,15 +220,16 @@ class ForestModel(object):
             indent=2)
 
     def __field_value(self, field_name):
-        if self.__field in self.__meta and field_name in self.__meta[self.__field] \
-                and self.__xpath in self.__meta[self.__field][field_name]:
-            value = (self.depend_sources[self.__meta[self.__field][field_name][self.__xpath]])["value"]
-            if type(value) is list and len(value) > 0:
-                return value[0]
-            else:
-                return value
+        if self.__field in self.__meta and field_name in self.__meta[self.__field]:
+            field = self.__meta[self.__field][field_name]
+            if self.__value not in field and self.__xpath in field:
+                value = (self.depend_sources[field[self.__xpath]])["value"]
+                if type(value) is list and len(value) > 0:
+                    field[self.__value] = value[0]
+                else:
+                    field[self.__value] = value
+            return field[self.__value] if self.__value in field else field_name
         return field_name
-
 
     def result(self):
         # query the sources data
@@ -244,6 +245,7 @@ class ForestModel(object):
                 meta_source["value"] = root.xpath(meta_source["path"])
                 # loop the converts
                 converts = meta_source[self.__convert]
+                converts = converts if converts is not None else []
                 for idx, _ in enumerate(converts):
                     meta_source["value"], next_convert = Converter.excute_filter(meta_source["value"], converts[idx])
                     # for the convert chain

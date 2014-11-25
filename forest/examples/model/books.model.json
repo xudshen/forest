@@ -5,11 +5,12 @@
             "meta": {
                 "fields": {
                     "book_title": {
-                        "__value": "book_title",
-                        "__pk": true
+                        "__value": "呵呵",
+                        "__pk": true,
+                        "__list": true
                     },
                     "book_price": {
-                        "__value": "book_price"
+                        "__value": "洗澡"
                     },
                     "book_owner": {
                         "__value": "book_owner"
