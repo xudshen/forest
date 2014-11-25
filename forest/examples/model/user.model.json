@@ -5,7 +5,7 @@
             "meta": {
                 "fields": {
                     "__comment": "like env setting //source:xxx, xxx is the data source",
-                    "__xpath": "source://sample_user/html/body/table[1]/",
+                    "__xpath": "{source://sample_user/html/body/table[1]/}",
                     "first_name": {
                         "__comment": "{} means getting the value of this xpath; () is the filter chain of this xpath",
                         "__xpath": "{thead/tr/th[2]/text()}(string)"
@@ -23,7 +23,7 @@
 
             "databases": [
                 {
-                    "__xpath": "source://sample_user/html/body/table[1]/",
+                    "__xpath": "{source://sample_user/html/body/table[1]/}",
                     "first_name": {
                         "__xpath": "{tbody/tr/td[2]/text()}"
                     },

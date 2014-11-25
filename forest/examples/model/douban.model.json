@@ -3,7 +3,7 @@
         {
             "id": "shanghaizufang",
             "databases": {
-                "__xpath": "source://shanghaizufang/",
+                "__xpath": "{source://shanghaizufang/}",
                 "title": "{/html/body/div/div/div/div/div/table/tbody/tr/td[1]/a/text()}"
             }
         }

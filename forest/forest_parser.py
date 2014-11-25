@@ -56,6 +56,6 @@ if __name__ == "__main__":
     # root = ForestSourceFactory.get("sample_user").data()
     # r = root.xpath("/html/body/table[1]/thead/tr/th[4]/text()")
     # [model.result() for model in ForestModelFactory.values()]
-    ForestModelFactory.get("lily_user_no_js").result()
+    # ForestModelFactory.get("lily_user_no_js").result()
     # ForestModelFactory.get("user").result()
     # log_i(ForestModelFactory.get("book"))
