@@ -6,7 +6,7 @@
                 "fields": {
                     "book_title": {
                         "__value": "book_title",
-                        "pk": true
+                        "__pk": true
                     },
                     "book_price": {
                         "__value": "book_price"
