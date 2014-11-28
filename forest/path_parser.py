@@ -1,6 +1,9 @@
 __author__ = 'xudshen@hotmail.com'
 
+import re
+
 from forest.logger import log_d
+
 
 tokens = (
     'NAME', 'NUMBER', 'STRING', 'STRING_PATH',
@@ -130,6 +133,16 @@ def resolve_xpath(path):
         log_d("resolve xpath failed: " + path)
         return None, None
     return ast["path"] if "path" in ast else None, ast["chain"] if "chain" in ast else None
+
+
+def split_path(uri):
+    if uri is None:
+        return None, None, None
+    m = re.match(r"^(.*)://(\w+)(/.*)$", uri)
+    if m is not None:
+        return m.group(1), m.group(2), m.group(3)
+    else:
+        return None, None, None
 
 
 if __name__ == '__main__':

@@ -6,33 +6,26 @@
                 "fields": {
                     "__comment": "like env setting //source:xxx, xxx is the data source",
                     "__xpath": "{source://sample_user/html/body/table[1]/}",
-                    "first_name": {
-                        "__comment": "{} means getting the value of this xpath; () is the filter chain of this xpath",
-                        "__xpath": "{thead/tr/th[2]/text()}(string)"
-                    },
-                    "last_name": {
-                        "__comment": "(string) can be ignored as the default filer",
-                        "__xpath": "{thead/tr/th[3]/text()}"
-                    },
-                    "user_name": {
-                        "__xpath": "{source://sample_user/html/body/table[1]/thead/tr/th[4]/text()}",
-                        "__pk": true
-                    }
+                    "first_name": "{thead/tr/th[2]/text()}(string)",
+                    "last_name": "{thead/tr/th[3]/text()}",
+                    "user_name__pk": "{source://sample_user/html/body/table[1]/thead/tr/th[4]/text()}"
                 }
             },
 
             "databases": [
                 {
-                    "__xpath": "{source://sample_user/html/body/table[1]/}",
-                    "first_name": {
-                        "__xpath": "{tbody/tr/td[2]/text()}"
-                    },
-                    "last_name": {
-                        "__xpath": "{tbody/tr/td[3]/text()}"
-                    },
+                    "__xpath": "{source://sample_user/html/body/table[1]/tbody/tr}",
                     "__comment": "this will assume the value use __xpath",
-                    "user_name": "{tbody/tr/td[4]/text()}",
-                    "other": "test"
+                    "no": ["{td[1]/text()}"],
+                    "user_name": "{td[4]/text()}",
+                    "first_name": {
+                        "content": "{td[2]/text()}"
+                    },
+                    "last_name": [
+                        "{td[3]/text()}",
+                        "more..."
+                    ],
+                    "raw": "raw value"
                 }
             ],
 
