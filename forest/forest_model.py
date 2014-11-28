@@ -5,8 +5,7 @@ import json
 
 from forest.forest_factory import ForestAbsFactory
 from forest.forest_source import ForestSourceFactory
-
-from forest.logger import log_d
+from forest.logger import log_d, OperationParseError, ForestError
 from forest.path_parser import resolve_xpath, split_path
 
 
@@ -88,23 +87,33 @@ class ForestModel(object):
         self.__meta = meta
         self.__databases = databases
 
-        self.depend_sources = {}
-        self.grouped_depend_sources = {}
-        # log_d(self)
+        self.__source_cache = {}
+
+    def __source(self, loc):
+        if loc not in self.__source_cache:
+            src = ForestSourceFactory.get(loc)
+            if src is None:
+                raise ForestError("source<%s> not found" % loc)
+            self.__source_cache[loc] = src.data()
+        return self.__source_cache[loc]
 
     def __value_of_src(self, operation, src):
-        path, chain = resolve_xpath(operation)
-        if path is None and chain is None:
+        try:
+            path, chain = resolve_xpath(operation)
+        except OperationParseError:
             return operation
 
         if path is not None:
             if path.startswith(self.__source_prefix):
                 scheme, loc, xpath = split_path(path)
-                src = ForestSourceFactory.get(loc).data()
+                src = self.__source(loc)
             else:
                 xpath = path
-            # check the type here
-            src = src.xpath(xpath)
+            # check the type here??
+            try:
+                src = src.xpath(xpath)
+            except Exception:
+                raise ForestError("error at src.xpath")
 
         chain = chain if chain is not None else []
         for idx, _ in enumerate(chain):
@@ -119,12 +128,21 @@ class ForestModel(object):
     def __result(self, key, node, src, level):
         level += 1
         if type(node) is str:
-            src = self.__value_of_src(node, src)
+            try:
+                src = self.__value_of_src(node, src)
+            except ForestError as e:
+                e.attach(key, node)
+                raise
+
             return key, (src[0] if type(src) is list and len(src) > 0 else src) \
                 if key is not None else src
         elif type(node) is dict:
             if self.__xpath in node:
-                src = self.__value_of_src(node[self.__xpath], src)
+                try:
+                    src = self.__value_of_src(node[self.__xpath], src)
+                except ForestError as e:
+                    e.attach(self.__xpath, node[self.__xpath])
+                    raise
 
             src = src if type(src) is list else [src]
             node_r = []
@@ -133,7 +151,8 @@ class ForestModel(object):
                 for k, v in node.items():
                     if not str.startswith(k, self.__private_prefix):
                         _, node_r[idx][k] = self.__result(k, v, src_item, level)
-            return key, node_r
+            # if parent is dict, then key is not None, then return the first one
+            return key, node_r[0] if key is not None and type(node_r) is list and len(node_r) > 0  else node_r
         elif type(node) is list:
             # if list, combine the list item to a new list
             node_r = []
@@ -143,11 +162,13 @@ class ForestModel(object):
                     node_r += ret
                 else:
                     node_r.append(ret)
-            return key, node_r if len(node_r) > 1 else (node_r[0] if len(node_r) != 0 else None)
+            # return key, node_r if len(node_r) > 1 else (node_r[0] if len(node_r) != 0 else None)
+            return key, node_r
         return key, node
 
     def result(self):
-        _, ret = self.__result(None, self.__databases, None, 0)
+        self.__source_cache = {}
+        _, ret = self.__result("", self.__databases, None, 0)
         log_d(json.dumps(ret, indent=2))
 
     def __str__(self, *args, **kwargs):

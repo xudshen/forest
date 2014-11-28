@@ -2,7 +2,7 @@ __author__ = 'xudshen@hotmail.com'
 
 import re
 
-from forest.logger import log_d
+from forest.logger import log_d, OperationParseError
 
 
 tokens = (
@@ -119,6 +119,7 @@ def p_argument(t):
 
 def p_error(t):
     log_d("Syntax error at '%s'" % (t.value if t is not None else "unknown"))
+    raise OperationParseError("Syntax error")
 
 
 import ply.yacc as yacc
@@ -127,7 +128,7 @@ parser = yacc.yacc()
 
 
 def resolve_xpath(path):
-    log_d("resolve xpath", path)
+    log_d("resolve> " + path)
     ast = parser.parse(path)
     if ast is None:
         log_d("resolve xpath failed: " + path)
@@ -136,9 +137,10 @@ def resolve_xpath(path):
 
 
 def split_path(uri):
-    if uri is None:
+    try:
+        m = re.match(r"^(.*)://(\w+)(/.*)$", uri)
+    except TypeError:
         return None, None, None
-    m = re.match(r"^(.*)://(\w+)(/.*)$", uri)
     if m is not None:
         return m.group(1), m.group(2), m.group(3)
     else:

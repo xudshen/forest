@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 
 from forest.forest_factory import ForestAbsFactory
-
+from forest.logger import ForestError
 
 class HttpMethod(Enum):
     GET = 0
@@ -52,8 +52,12 @@ class ForestSource(object):
             elif self.__method is HttpMethod.POST:
                 pass
 
-        return etree.fromstring(content, parser=parser)
-
+        # just a try except here
+        try:
+            root = etree.fromstring(content, parser=parser)
+        except Exception:
+            raise ForestError("error parsing the source<%s>" % self.__id)
+        return root
 
 class ForestSourceFactory(ForestAbsFactory):
     __sources = {}
